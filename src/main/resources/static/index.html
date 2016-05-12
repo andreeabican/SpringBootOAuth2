@@ -11,8 +11,28 @@
     <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
 </head>
-<body>
+<body ng-app="app" ng-controller="home as home">
 <h1>Demo</h1>
-<div class="container"></div>
+<div class="container" ng-show="!home.authenticated">
+    Login with: <a href="/login">Facebook</a>
+</div>
+<div class="container" ng-show="home.authenticated">
+    Logged in as: <span ng-bind="home.user"></span>
+</div>
+
+<script type="text/javascript" src="/webjars/angularjs/angular.min.js"></script>
+<script type="text/javascript">
+  angular.module("app", []).controller("home", function($http) {
+    var self = this;
+    $http.get("/user").success(function(data) {
+      self.user = data.userAuthentication.details.name;
+      self.authenticated = true;
+    }).error(function() {
+      self.user = "N/A";
+      self.authenticated = false;
+    });
+  });
+</script>
+
 </body>
 </html>
