@@ -16,6 +16,7 @@
         <module>model</module>
         <module>persistence</module>
         <module>web</module>
+        <module>security</module>
     </modules>
 
     <parent>
@@ -27,7 +28,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.8</java.version>
+        <java.version>1.7</java.version>
     </properties>
 
     <dependencies>
