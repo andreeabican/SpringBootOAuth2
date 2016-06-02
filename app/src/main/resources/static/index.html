@@ -22,8 +22,9 @@
     </div>
 </div>
 <div class="container" ng-show="home.authenticated">
-    Logged in as: <span ng-bind="home.user"></span>
-
+    Logged in as: <span ng-bind="home.user"></span><br>
+	Email: <span ng-bind="home.email"></span><br>
+	UUID: <span ng-bind="home.uuid"></span><br>
     <div>
         <button ng-click="home.logout()" class="btn btn-primary">Logout</button>
     </div>
@@ -42,7 +43,8 @@
 						    if( data.userAuthentication.details.displayName != null)
 						    {
 							    self.user = data.userAuthentication.details.displayName;
-							    self.email = data.userAuthentication.details.emails.value;
+							    self.email = data.userAuthentication.details.email;
+								self.uuid = data.userAuthentication.details.cbioportal_uuid;
 							    self.authenticated = true;
 							}
 							else
