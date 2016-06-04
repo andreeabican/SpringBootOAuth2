@@ -16,14 +16,17 @@
 <body ng-app="app" ng-controller="home as home">
 <h1>Login</h1>
 <div class="container" ng-show="!home.authenticated">
-
+    <div>
+        With Facebook: <a href="/login/facebook">click here</a>
+    </div>
     <div>
         With Google: <a href="/login/google">click here</a>
     </div>
 </div>
 <div class="container" ng-show="home.authenticated">
-    Logged in as: <span ng-bind="home.user"></span>
-
+    Logged in as: <span ng-bind="home.user"></span><br>
+    Email: <span ng-bind="home.email"></span><br>
+    UUID: <span ng-bind="home.uuid"></span><br>
     <div>
         <button ng-click="home.logout()" class="btn btn-primary">Logout</button>
     </div>
@@ -39,10 +42,11 @@
 					    var self = this;
 					$http.get("/user").success(function(data) {
 						if (data.name) {
-						    if( data.userAuthentication.details.displayName != null)
+						    if( data.userAuthentication.details!= null)
 						    {
-							    self.user = data.userAuthentication.details.displayName;
-							    self.email = data.userAuthentication.details.emails.value;
+							    self.user = data.userAuthentication.details.username;
+							    self.email = data.userAuthentication.details.email;
+								self.uuid = data.userAuthentication.details.cbioportal_uuid;
 							    self.authenticated = true;
 							}
 							else
@@ -51,7 +55,6 @@
 							     self.email = "Not found";
 							    self.authenticated = true;
 							}
-
 						}else{
 							self.user = "N/A";
 							self.authenticated = false;
