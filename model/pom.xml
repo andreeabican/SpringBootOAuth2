@@ -11,12 +11,6 @@
 
     <artifactId>model</artifactId>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-    </dependencies>
     <properties>
         <!-- The main class to start by executing java -jar -->
         <start-class>Andreea.Bican.app.src.java.main.OAuthApplication</start-class>
