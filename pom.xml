@@ -21,10 +21,11 @@
 
     <modules>
         <module>app</module>
-        <module>model</module>
-        <module>persistence</module>
         <module>web</module>
         <module>security</module>
+        <module>persistence</module>
+        <module>service</module>
+        <module>model</module>
     </modules>
 
     <properties>
@@ -68,6 +69,10 @@
         <dependency>
             <groupId>org.springframework.security.oauth</groupId>
             <artifactId>spring-security-oauth2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
         </dependency>
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>
