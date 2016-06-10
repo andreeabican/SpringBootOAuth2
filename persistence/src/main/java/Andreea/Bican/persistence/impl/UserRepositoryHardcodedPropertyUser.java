@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class UserRepositoryHardcodedPropertyUser {
     private String email;
     private String name;
-    private String uuid;
+    private String userUuid;
 
     public String getEmail() {
         return this.email;
@@ -25,11 +25,11 @@ public class UserRepositoryHardcodedPropertyUser {
         this.name = name;
     }
 
-    public String getUuid() {
-        return this.uuid;
+    public String getUserUuid() {
+        return this.userUuid;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setUserUuid(String userUuid) {
+        this.userUuid = userUuid;
     }
 }

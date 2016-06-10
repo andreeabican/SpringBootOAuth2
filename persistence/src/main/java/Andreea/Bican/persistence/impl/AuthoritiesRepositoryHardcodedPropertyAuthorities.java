@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 public class AuthoritiesRepositoryHardcodedPropertyAuthorities {
     private int pk;
-    private String uuid;
+    private String userUuid;
     private String authority;
 
     public int getPk() {
@@ -17,12 +17,12 @@ public class AuthoritiesRepositoryHardcodedPropertyAuthorities {
             this.pk = pk;
     }
 
-    public String getUuid() {
-        return uuid;
+    public String getUserUuid() {
+        return userUuid;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setUserUuid(String userUuid) {
+        this.userUuid = userUuid;
     }
 
     public String getAuthority() {

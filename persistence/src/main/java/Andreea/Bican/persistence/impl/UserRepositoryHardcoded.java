@@ -29,10 +29,10 @@ public class UserRepositoryHardcoded implements UserRepository {
                 User foundUser = new User();
                 foundUser.setEmail(users.get(userKey).getEmail());
                 foundUser.setName(users.get(userKey).getName());
-                String uuid = users.get(userKey).getUuid();
-                foundUser.setUuid(uuid);
+                String userUuid = users.get(userKey).getUserUuid();
+                foundUser.setUuid(userUuid);
                 Set<String> userAuthorities = new HashSet<String>();
-                List<Authorities> uuidAuthorities = authoritiesRepository.getAuthorities(uuid);
+                List<Authorities> uuidAuthorities = authoritiesRepository.getAuthorities(userUuid);
                 for (Authorities authority : uuidAuthorities) {
                     userAuthorities.add(authority.getAuthority());
                 }

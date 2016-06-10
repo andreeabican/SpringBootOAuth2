@@ -3,12 +3,12 @@ package Andreea.Bican.model;
 public class Class {
     private int id;
     private String name;
-    private int styleId;
+    private Style style;
     private String description;
 
     public Class() {
-
     }
+
     public int getId() {
         return id;
     }
@@ -25,12 +25,12 @@ public class Class {
         this.name = name;
     }
 
-    public int getStyleId() {
-        return styleId;
+    public Style getStyle() {
+        return style;
     }
 
-    public void setStyleId(int styleId) {
-        this.styleId = styleId;
+    public void setStyle(Style style) {
+        this.style = style;
     }
 
     public String getDescription() {
