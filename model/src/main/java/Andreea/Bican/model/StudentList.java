@@ -1,11 +1,16 @@
 package Andreea.Bican.model;
 
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Collection;
+
 public class StudentList {
     private int studentListId;
     private int classId;
-    private String authorities;
+    private Set<String> authorities;
 
     public StudentList() {
+        authorities = new HashSet<String>();
     }
 
     public int getStudentListId() {
@@ -20,15 +25,16 @@ public class StudentList {
         return classId;
     }
 
-    public void setClassid(int classId) {
+    public void setClassId(int classId) {
         this.classId = classId;
     }
 
-    public String getAuthorities() {
+    public Set<String> getAuthorities() {
         return authorities;
     }
 
-    public void setAuthorities(String authorities) {
-        this.authorities = authorities;
+    public void setAuthorities(Collection<String> authorities) {
+        this.authorities.clear();
+        this.authorities.addAll(authorities);
     }
 }

@@ -1,18 +1,20 @@
-package Andreea.Bican.model;
+package Andreea.Bican.persistence.impl;
 
-public class StudentListMembership {
+import java.util.HashMap;
+import org.springframework.stereotype.Component;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+public class StudentListMembershipRepositoryHardcodedPropertyStudentListMembership {
     private int pk;
     private int studentListId;
     private int studentId;
-
-    public StudentListMembership() {}
 
     public int getPk() {
         return pk;
     }
 
     public void setPk(int pk) {
-            this.pk = pk;
+        this.pk = pk;
     }
 
     public int getStudentListId() {
@@ -30,4 +32,5 @@ public class StudentListMembership {
     public void setStudentId(int studentId) {
         this.studentId = studentId;
     }
+
 }

@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Iterator;
 import java.security.Principal;
 import org.json.simple.*;
 import org.json.simple.parser.*;
@@ -18,10 +19,14 @@ import Andreea.Bican.model.User;
 import Andreea.Bican.model.Authorities;
 import Andreea.Bican.model.Class;
 import Andreea.Bican.model.Student;
+import Andreea.Bican.model.StudentList;
+import Andreea.Bican.model.StudentListMembership;
 import Andreea.Bican.service.UserService;
 import Andreea.Bican.service.AuthoritiesService;
 import Andreea.Bican.service.ClassService;
 import Andreea.Bican.service.StudentService;
+import Andreea.Bican.service.StudentListService;
+import Andreea.Bican.service.StudentListMembershipService;
 
 @RestController
 public class ApiController
@@ -38,6 +43,12 @@ public class ApiController
 
     @Autowired
     private ClassService classService;
+
+    @Autowired
+    private StudentListService studentListService;
+
+    @Autowired
+    private StudentListMembershipService studentListMembershipService;
 
     @RequestMapping("/user")
     public Principal user(Principal principal) throws IOException, ParseException {
@@ -113,6 +124,27 @@ public class ApiController
                     "<br>style: " + classs.getStyle().getName() +
                     "<br>description: " + classs.getDescription() +
                     "<br>&nbsp;<br>";
+        }
+        return outputString;
+    }
+
+    @RequestMapping("/studentlists")
+    public String studentList(Principal principal) {
+        //TODO: add appropriate user authority checking here (Authorized user has authority which is in set of authorities for list of lists)
+        int hardcodedClassId = 3;
+        List<StudentList> studentLists = studentListService.getStudentLists(hardcodedClassId); //hardcoded example
+        if (studentLists == null) {
+            return "null";
+        }
+        String outputString = "student lists which have class id " + Integer.toString(hardcodedClassId) + ":";
+        for (StudentList studentList : studentLists) {
+            outputString = outputString +
+                    "<br>&nbsp;" + Integer.toString(studentList.getStudentListId()) + ", (required authority : in";
+            Iterator<String> authorityIterator = studentList.getAuthorities().iterator();
+            while (authorityIterator.hasNext()) {
+                outputString = outputString + " " + authorityIterator.next();
+            }
+            outputString = outputString + ")";
         }
         return outputString;
     }
