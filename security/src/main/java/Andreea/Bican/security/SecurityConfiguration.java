@@ -1,5 +1,14 @@
-package Andreea.Bican;
+package Andreea.Bican.security;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
@@ -23,17 +32,7 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.web.filter.CompositeFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
+import Andreea.Bican.service.UserService;
 
 @Configuration
 @EnableOAuth2Client
@@ -41,6 +40,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     OAuth2ClientContext oauth2ClientContext;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -62,7 +64,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private Filter csrfHeaderFilter() {
         return new OncePerRequestFilter() {
-
             @Override
             protected void doFilterInternal(HttpServletRequest request,
                                             HttpServletResponse response, FilterChain filterChain)
@@ -93,13 +94,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         OAuth2ClientAuthenticationProcessingFilter facebookFilter = new OAuth2ClientAuthenticationProcessingFilter("/login/facebook");
         OAuth2RestTemplate facebookTemplate = new OAuth2RestTemplate(facebook(), oauth2ClientContext);
         facebookFilter.setRestTemplate(facebookTemplate);
-        facebookFilter.setTokenServices(new CustomUserInfoTokenServices(facebookResource().getUserInfoUri(), facebook().getClientId(), "facebook"));
+        facebookFilter.setTokenServices(new CustomUserInfoTokenServices(facebookResource().getUserInfoUri(), facebook().getClientId(), userService, "facebook"));
         filters.add(facebookFilter);
 
         OAuth2ClientAuthenticationProcessingFilter googleFilter = new OAuth2ClientAuthenticationProcessingFilter("/login/google");
         OAuth2RestTemplate googleTemplate = new OAuth2RestTemplate(google(), oauth2ClientContext);
         googleFilter.setRestTemplate(googleTemplate);
-        googleFilter.setTokenServices(new CustomUserInfoTokenServices(googleResource().getUserInfoUri(), google().getClientId(), "google"));
+        googleFilter.setTokenServices(new CustomUserInfoTokenServices(googleResource().getUserInfoUri(), google().getClientId(), userService, "google"));
         filters.add(googleFilter);
 
         filter.setFilters(filters);
@@ -112,25 +113,25 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     */
 
     @Bean
-    @ConfigurationProperties("google.client")
+    @ConfigurationProperties(prefix = "google.client")
     OAuth2ProtectedResourceDetails google() {
         return new AuthorizationCodeResourceDetails();
     }
 
     @Bean
-    @ConfigurationProperties("google.resource")
+    @ConfigurationProperties(prefix = "google.resource")
     ResourceServerProperties googleResource() {
         return new ResourceServerProperties();
     }
 
     @Bean
-    @ConfigurationProperties("facebook.client")
+    @ConfigurationProperties(prefix = "facebook.client")
     OAuth2ProtectedResourceDetails facebook() {
         return new AuthorizationCodeResourceDetails();
     }
 
     @Bean
-    @ConfigurationProperties("facebook.resource")
+    @ConfigurationProperties(prefix = "facebook.resource")
     ResourceServerProperties facebookResource() {
         return new ResourceServerProperties();
     }
