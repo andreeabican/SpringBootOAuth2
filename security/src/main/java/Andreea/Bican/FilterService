@@ -1,9 +1,0 @@
-package Andreea.Bican;
-
-import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
-
-public interface FilterService{
-     OAuth2ClientAuthenticationProcessingFilter createFilter();
-
-     String createAuthenticationPath(String provider);
-}
