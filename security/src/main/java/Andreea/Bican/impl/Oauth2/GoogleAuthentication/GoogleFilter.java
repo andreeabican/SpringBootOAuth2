@@ -1,52 +1,58 @@
 package Andreea.Bican.impl.Oauth2.GoogleAuthentication;
 
-import Andreea.Bican.impl.Configuration.CustomUserInfoTokenServices;
-import Andreea.Bican.impl.Configuration.SecurityConfiguration;
-import Andreea.Bican.impl.Oauth2.ProviderFilter;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
 import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.springframework.security.oauth2.common.AuthenticationScheme.query;
+
 /**
  * Created by andre on 13.06.2016.
  */
 
-public class GoogleFilter extends ProviderFilter{
+public class GoogleFilter{
 
-    OAuth2ClientContext oAuth2ClientContext;
-
-    public GoogleFilter()
-    {
-        this.oAuth2ClientContext = SecurityConfiguration.oauth2ClientContext;
+    public List<String> createScopesList(){
+        List<String> scopes = new ArrayList<>();
+        scopes.add("profile");
+        scopes.add("email");
+        return scopes;
     }
-
-    public String createAuthenticationPath(String provider)
-    {
-        return "/login/" + provider;
-    }
-
-    @Bean
-    @ConfigurationProperties(prefix="google.client")
     OAuth2ProtectedResourceDetails getClient() {
-        return new AuthorizationCodeResourceDetails();
+
+        AuthorizationCodeResourceDetails authorizationCodeResourceDetails = new AuthorizationCodeResourceDetails();
+        authorizationCodeResourceDetails.setClientId("clientId");
+        authorizationCodeResourceDetails.setClientSecret("clientSecret");
+        authorizationCodeResourceDetails.setAccessTokenUri("https://www.googleapis.com/oauth2/v3/token");
+        authorizationCodeResourceDetails.setUserAuthorizationUri("https://accounts.google.com/o/oauth2/auth");
+        authorizationCodeResourceDetails.setTokenName("oauth_token");
+        authorizationCodeResourceDetails.setClientAuthenticationScheme(query);
+        authorizationCodeResourceDetails.setScope(createScopesList());
+
+        return authorizationCodeResourceDetails;
     }
 
-    @Bean
-    @ConfigurationProperties(prefix="google.resource")
     ResourceServerProperties getProviderResource() {
-        return new ResourceServerProperties();
+        ResourceServerProperties resourceServerProperties = new ResourceServerProperties();
+        resourceServerProperties.setUserInfoUri("https://www.googleapis.com/plus/v1/people/me");
+        resourceServerProperties.setPreferTokenInfo(false);
+
+        return resourceServerProperties;
     }
 
-    public OAuth2ClientAuthenticationProcessingFilter createFilter() {
-        OAuth2ClientAuthenticationProcessingFilter googleFilter = new OAuth2ClientAuthenticationProcessingFilter(createAuthenticationPath("google"));
+    public OAuth2ClientAuthenticationProcessingFilter createFilter(OAuth2ClientContext oAuth2ClientContext) {
+
+        OAuth2ClientAuthenticationProcessingFilter googleFilter = new OAuth2ClientAuthenticationProcessingFilter("/login/google");
         OAuth2RestTemplate googleTemplate = new OAuth2RestTemplate(getClient(), oAuth2ClientContext);
         googleFilter.setRestTemplate(googleTemplate);
-        googleFilter.setTokenServices(new CustomUserInfoTokenServices(getProviderResource().getUserInfoUri(), getClient().getClientId(), "google"));
+        googleFilter.setTokenServices(new GoogleCustomUserInfoTokenService(getProviderResource().getUserInfoUri(), getClient().getClientId()));
+
         return googleFilter;
     }
 }
