@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
-import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -39,7 +38,7 @@ import java.util.List;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    public static OAuth2ClientContext oauth2ClientContext;
+    OAuth2ClientContext oauth2ClientContext;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -89,15 +88,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         CompositeFilter filter = new CompositeFilter();
         List<Filter> filters = new ArrayList<>();
 
-        FilterFactory filterFactory = new FilterFactory();
+        FacebookFilter facebookFilter = new FacebookFilter();
+        filters.add(facebookFilter.createFilter(oauth2ClientContext));
 
-
-        FacebookFilter facebookFilter = (FacebookFilter) filterFactory.createFilter("facebook", oauth2ClientContext);
-        OAuth2ClientAuthenticationProcessingFilter facebookFi = facebookFilter.createFilter();
-        filters.add(facebookFi);
-
-        GoogleFilter googleFilter = (GoogleFilter) filterFactory.createFilter("google", oauth2ClientContext);
-        filters.add(googleFilter.createFilter());
+        GoogleFilter googleFilter = new GoogleFilter();
+        filters.add(googleFilter.createFilter(oauth2ClientContext));
 
         filter.setFilters(filters);
         return filter;
