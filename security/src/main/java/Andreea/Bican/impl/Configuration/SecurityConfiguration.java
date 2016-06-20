@@ -3,6 +3,7 @@ package Andreea.Bican.impl.Configuration;
 import Andreea.Bican.impl.Oauth2.FacebookAuthentication.FacebookFilter;
 import Andreea.Bican.impl.Oauth2.GoogleAuthentication.GoogleFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
+import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -39,6 +41,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     OAuth2ClientContext oauth2ClientContext;
+
+    @Autowired
+    @Qualifier("facebookFilter")
+    OAuth2ClientAuthenticationProcessingFilter facebookFilter;
+
+    @Autowired
+    @Qualifier("googleFilter")
+    OAuth2ClientAuthenticationProcessingFilter googleFilter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -88,11 +98,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         CompositeFilter filter = new CompositeFilter();
         List<Filter> filters = new ArrayList<>();
 
-        FacebookFilter facebookFilter = new FacebookFilter();
-        filters.add(facebookFilter.createFilter(oauth2ClientContext));
-
-        GoogleFilter googleFilter = new GoogleFilter();
-        filters.add(googleFilter.createFilter(oauth2ClientContext));
+        filters.add(facebookFilter);
+        filters.add(googleFilter);
 
         filter.setFilters(filters);
         return filter;
