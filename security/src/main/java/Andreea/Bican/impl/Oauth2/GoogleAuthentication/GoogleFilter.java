@@ -1,6 +1,7 @@
 package Andreea.Bican.impl.Oauth2.GoogleAuthentication;
 
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
@@ -24,6 +25,7 @@ public class GoogleFilter{
         scopes.add("email");
         return scopes;
     }
+
     OAuth2ProtectedResourceDetails getClient() {
 
         AuthorizationCodeResourceDetails authorizationCodeResourceDetails = new AuthorizationCodeResourceDetails();
@@ -46,13 +48,13 @@ public class GoogleFilter{
         return resourceServerProperties;
     }
 
+    @Bean(name="googleFilter")
     public OAuth2ClientAuthenticationProcessingFilter createFilter(OAuth2ClientContext oAuth2ClientContext) {
 
         OAuth2ClientAuthenticationProcessingFilter googleFilter = new OAuth2ClientAuthenticationProcessingFilter("/login/google");
         OAuth2RestTemplate googleTemplate = new OAuth2RestTemplate(getClient(), oAuth2ClientContext);
         googleFilter.setRestTemplate(googleTemplate);
         googleFilter.setTokenServices(new GoogleCustomUserInfoTokenService(getProviderResource().getUserInfoUri(), getClient().getClientId()));
-
         return googleFilter;
     }
 }
