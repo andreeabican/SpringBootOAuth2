@@ -1,12 +1,16 @@
 package Andreea.Bican;
 
-import java.security.Principal;
-import org.springframework.web.bind.annotation.*;
+import com.sun.javafx.geom.transform.Identity;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.io.*;
-import org.json.simple.*;
-import org.json.simple.parser.*;
-import org.codehaus.jackson.map.ObjectMapper;
+import java.io.IOException;
+import java.security.Principal;
 
 /**
  * Created by grossb on 5/31/16.
@@ -17,28 +21,18 @@ public class ApiController
     UserRepository userRepository = new UserRepository();
 
     @RequestMapping("/user")
-    public Principal user(Principal principal) throws IOException, ParseException {
-        if(principal == null) {
-            //CurrentUser.logout();
+    public Principal user(Principal identity) throws IOException, ParseException {
+        if(identity == null) {
             return null;
         }else{
-            /*
-            convertPrincipalObjectToJSON(principal);
-            User loggedUser = getLoggedUser();
-            User user = userRepository.getUser(loggedUser.getId());
-            if(user != null) {
-                CurrentUser.login(user);
-            }else{
-                loggedUser.setAuthority(false);
-                CurrentUser.login(loggedUser);
-            }
-            */
-            return principal;
+            return identity;
         }
     }
 
-    @RequestMapping("/danceclasses")
-    public String danceClasses() {
+    @RequestMapping(value="/danceclasses", method = RequestMethod.GET)
+    public String danceClasses(@RequestHeader("token")String token) {
+            if(token.equals(CurrentUser.accessToken))
+                return token;
         if(CurrentUser.isAuthenticated()){
             if(CurrentUser.getUser().getAuthority()){
                 return "Welcome to your dance class";
@@ -50,33 +44,24 @@ public class ApiController
         }
     }
 
-    public String convertPrincipalObjectToJSON(Principal principal) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(new File("principal.json"), principal);
-        return mapper.writeValueAsString(principal);
-    }
 
-    public User getLoggedUser() throws IOException, ParseException {
+    public User getLoggedUser(Identity identity) throws IOException, ParseException {
 
-        FileReader reader  = new FileReader("principal.json");
         JSONParser parser = new JSONParser();
         User user = new User();
         try{
-            JSONObject jsonObject = (JSONObject)parser.parse(reader);
+            JSONObject jsonObject = (JSONObject)parser.parse(identity.toString());
 
             JSONObject userAuthJSON = (JSONObject)jsonObject.get("userAuthentication");
             JSONObject detailsJSON = (JSONObject)userAuthJSON.get("details");
-            String userName = (String)detailsJSON.get("displayName");
+            String userName = (String)detailsJSON.get("userName");
             user.setUserName(userName);
 
-            JSONArray emailsJSON = (JSONArray)detailsJSON.get("emails");
-            JSONObject emailJSON = (JSONObject) emailsJSON.get(0);
-            String email = (String) emailJSON.get("value");
+            String email = (String) detailsJSON.get("userEmail");
             user.setEmail(email);
 
-            String id = (String) detailsJSON.get("id");
+            String id = (String) detailsJSON.get("userId");
             user.setId(id);
-            user.setUuid();
             return user;
         } catch (ParseException e) {
             e.printStackTrace();
