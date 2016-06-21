@@ -30,8 +30,8 @@ public class FacebookFilter{
     OAuth2ProtectedResourceDetails facebook() {
        AuthorizationCodeResourceDetails authorizationCodeResourceDetails = new AuthorizationCodeResourceDetails();
 
-        authorizationCodeResourceDetails.setClientId("clientId");
-        authorizationCodeResourceDetails.setClientSecret("clientSecret");
+        authorizationCodeResourceDetails.setClientId("1726962864239113");
+        authorizationCodeResourceDetails.setClientSecret("43fdfab2ebdee4978bf7090a02817414");
         authorizationCodeResourceDetails.setAccessTokenUri("https://graph.facebook.com/oauth/access_token");
         authorizationCodeResourceDetails.setUserAuthorizationUri("https://www.facebook.com/dialog/oauth");
         authorizationCodeResourceDetails.setTokenName("oauth_token");
