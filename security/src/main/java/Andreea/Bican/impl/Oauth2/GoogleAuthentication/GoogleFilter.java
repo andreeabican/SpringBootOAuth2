@@ -29,8 +29,8 @@ public class GoogleFilter{
     OAuth2ProtectedResourceDetails getClient() {
 
         AuthorizationCodeResourceDetails authorizationCodeResourceDetails = new AuthorizationCodeResourceDetails();
-        authorizationCodeResourceDetails.setClientId("565779346670-4hqpp1qbqa45go8pue5ncgirsk4rnc1o.apps.googleusercontent.com");
-        authorizationCodeResourceDetails.setClientSecret("ulAV2AnP1vkezZ1ORN7D9pA6");
+        authorizationCodeResourceDetails.setClientId("clientId");
+        authorizationCodeResourceDetails.setClientSecret("clientSecret");
         authorizationCodeResourceDetails.setAccessTokenUri("https://www.googleapis.com/oauth2/v3/token");
         authorizationCodeResourceDetails.setUserAuthorizationUri("https://accounts.google.com/o/oauth2/auth");
         authorizationCodeResourceDetails.setTokenName("oauth_token");
