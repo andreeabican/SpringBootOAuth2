@@ -17,6 +17,13 @@
         <!-- The main class to start by executing java -jar -->
         <start-class>Andreea.Bican.app.src.java.main.OAuthApplication</start-class>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>Andreea.Bican</groupId>
+            <artifactId>model</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 
 </project>

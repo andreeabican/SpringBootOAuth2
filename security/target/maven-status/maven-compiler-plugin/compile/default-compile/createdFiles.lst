@@ -1,0 +1,7 @@
+Andreea\Bican\impl\Oauth2\FacebookAuthentication\FacebookFilter.class
+Andreea\Bican\impl\Configuration\SecurityConfiguration$1.class
+Andreea\Bican\impl\Oauth2\GoogleAuthentication\GoogleFilter.class
+Andreea\Bican\impl\Oauth2\ProviderFilter.class
+Andreea\Bican\impl\Configuration\SecurityConfiguration.class
+Andreea\Bican\impl\Oauth2\GoogleAuthentication\GoogleCustomUserInfoTokenService.class
+Andreea\Bican\impl\Oauth2\FacebookAuthentication\FacebookCustomUserInfoTokenService.class
