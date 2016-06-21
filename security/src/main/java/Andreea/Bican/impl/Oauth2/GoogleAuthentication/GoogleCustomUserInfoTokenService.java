@@ -21,7 +21,8 @@ public class GoogleCustomUserInfoTokenService extends UserInfoTokenServices {
 
     public OAuth2Authentication loadAuthentication(String accessToken) throws AuthenticationException
     {
-        CurrentUser.accessToken = accessToken;
+        CurrentUser.setAccessToken(accessToken);
+        CurrentUser.setProvider("google");
         OAuth2Authentication auth = super.loadAuthentication(accessToken);
         if (userIsKnown(getUserDetails(auth))) {
             getUserDetails(auth).put("userId", getUserId(getUserDetails(auth)));
@@ -48,7 +49,9 @@ public class GoogleCustomUserInfoTokenService extends UserInfoTokenServices {
     private String getUserName(Map<String, Object> userDetails)
     {
         if(userDetails.containsKey("displayName")){
-            return (String) userDetails.get("displayName");
+            String userName = (String) userDetails.get("displayName");
+            CurrentUser.setUserName(userName);
+            return userName;
         }
         return "unknown";
     }
