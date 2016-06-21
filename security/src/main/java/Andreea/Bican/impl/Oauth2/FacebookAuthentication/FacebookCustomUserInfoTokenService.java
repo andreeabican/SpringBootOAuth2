@@ -20,7 +20,8 @@ public class FacebookCustomUserInfoTokenService extends UserInfoTokenServices {
 
     public OAuth2Authentication loadAuthentication(String accessToken) throws AuthenticationException
     {
-        CurrentUser.accessToken = accessToken;
+        CurrentUser.setAccessToken(accessToken);
+        CurrentUser.setProvider("facebook");
         OAuth2Authentication auth = super.loadAuthentication(accessToken);
         if (userIsKnown(getUserDetails(auth))) {
             getUserDetails(auth).put("userId", getUserId(getUserDetails(auth)));
@@ -45,7 +46,9 @@ public class FacebookCustomUserInfoTokenService extends UserInfoTokenServices {
     private String getUserName(Map<String, Object> userDetails)
     {
         if(userDetails.containsKey("name")){
-            return (String) userDetails.get("name");
+            String userName = (String) userDetails.get("name");
+            CurrentUser.setUserName(userName);
+            return userName;
         }
         return "unknown";
     }
