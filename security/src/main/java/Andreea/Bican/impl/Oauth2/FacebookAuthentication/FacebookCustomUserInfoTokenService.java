@@ -1,5 +1,6 @@
 package Andreea.Bican.impl.Oauth2.FacebookAuthentication;
 
+import Andreea.Bican.CurrentUser;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,11 +20,13 @@ public class FacebookCustomUserInfoTokenService extends UserInfoTokenServices {
 
     public OAuth2Authentication loadAuthentication(String accessToken) throws AuthenticationException
     {
+        CurrentUser.accessToken = accessToken;
         OAuth2Authentication auth = super.loadAuthentication(accessToken);
         if (userIsKnown(getUserDetails(auth))) {
             getUserDetails(auth).put("userId", getUserId(getUserDetails(auth)));
             getUserDetails(auth).put("userEmail", getUserEmail(getUserDetails(auth)));
             getUserDetails(auth).put("userName", getUserName(getUserDetails(auth)));
+            getUserDetails(auth).put("token", accessToken);
         }
         else {
             throw new UsernameNotFoundException("Unknown user: " + getUserEmail(getUserDetails(auth)));
