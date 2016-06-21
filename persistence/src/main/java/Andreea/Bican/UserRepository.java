@@ -6,10 +6,9 @@ import java.util.List;
 /**
  * Created by andre on 27.05.2016.
  */
-public class UserRepository implements UserService{
+public class UserRepository{
     List<User> listOfUsers;
 
-    @Override
     public User getUser(String userId) {
         for(User user : listOfUsers){
             if(userId.equals(user.getId())){
