@@ -1,11 +1,12 @@
 package Andreea.Bican;
 
+import java.security.Principal;
 import java.util.UUID;
 
 /**
  * Created by andre on 26.05.2016.
  */
-public class User {
+public class User implements Principal{
     static UUID uuid;
     private String userName;
     private String id;
@@ -51,4 +52,9 @@ public class User {
     public boolean getAuthority() {  return authority; }
 
     public void setAuthority(boolean authority) { this.authority = authority; }
+
+    @Override
+    public String getName() {
+        return userName;
+    }
 }
