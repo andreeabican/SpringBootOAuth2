@@ -5,6 +5,7 @@ package Andreea.Bican;
  */
 public class CurrentUser{
     private static User currentUser;
+    public static String accessToken;
 
     public static User getUser() { return currentUser;}
 
