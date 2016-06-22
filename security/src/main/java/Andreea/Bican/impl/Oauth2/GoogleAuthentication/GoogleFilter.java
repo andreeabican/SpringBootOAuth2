@@ -1,5 +1,7 @@
 package Andreea.Bican.impl.Oauth2.GoogleAuthentication;
 
+import Andreea.Bican.impl.IProviderFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
@@ -16,8 +18,10 @@ import static org.springframework.security.oauth2.common.AuthenticationScheme.qu
 /**
  * Created by andre on 13.06.2016.
  */
+public class GoogleFilter implements IProviderFilter {
 
-public class GoogleFilter{
+    @Autowired
+    OAuth2ClientContext oAuth2ClientContext;
 
     public List<String> createScopesList(){
         List<String> scopes = new ArrayList<>();
@@ -26,7 +30,7 @@ public class GoogleFilter{
         return scopes;
     }
 
-    OAuth2ProtectedResourceDetails getClient() {
+    public OAuth2ProtectedResourceDetails getClient() {
 
         AuthorizationCodeResourceDetails authorizationCodeResourceDetails = new AuthorizationCodeResourceDetails();
         authorizationCodeResourceDetails.setClientId("clientId");
@@ -40,7 +44,7 @@ public class GoogleFilter{
         return authorizationCodeResourceDetails;
     }
 
-    ResourceServerProperties getProviderResource() {
+    public ResourceServerProperties getProviderResource() {
         ResourceServerProperties resourceServerProperties = new ResourceServerProperties();
         resourceServerProperties.setUserInfoUri("https://www.googleapis.com/plus/v1/people/me");
         resourceServerProperties.setPreferTokenInfo(false);
@@ -49,7 +53,7 @@ public class GoogleFilter{
     }
 
     @Bean(name="googleFilter")
-    public OAuth2ClientAuthenticationProcessingFilter createFilter(OAuth2ClientContext oAuth2ClientContext) {
+    public OAuth2ClientAuthenticationProcessingFilter createFilter() {
 
         OAuth2ClientAuthenticationProcessingFilter googleFilter = new OAuth2ClientAuthenticationProcessingFilter("/login/google");
         OAuth2RestTemplate googleTemplate = new OAuth2RestTemplate(getClient(), oAuth2ClientContext);

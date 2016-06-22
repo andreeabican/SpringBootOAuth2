@@ -1,5 +1,7 @@
 package Andreea.Bican.impl.Oauth2.FacebookAuthentication;
 
+import Andreea.Bican.impl.IProviderFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
@@ -18,7 +20,10 @@ import static org.springframework.security.oauth2.common.AuthenticationScheme.qu
  * Created by andre on 13.06.2016.
  */
 
-public class FacebookFilter{
+public class FacebookFilter implements IProviderFilter {
+
+    @Autowired
+    OAuth2ClientContext oAuth2ClientContext;
 
     public List<String> createScopesList()
     {
@@ -27,7 +32,7 @@ public class FacebookFilter{
         return scopes;
     }
 
-    OAuth2ProtectedResourceDetails facebook() {
+    public OAuth2ProtectedResourceDetails getClient() {
        AuthorizationCodeResourceDetails authorizationCodeResourceDetails = new AuthorizationCodeResourceDetails();
 
         authorizationCodeResourceDetails.setClientId("clientId");
@@ -42,7 +47,7 @@ public class FacebookFilter{
         return authorizationCodeResourceDetails;
     }
 
-    ResourceServerProperties facebookResource() {
+    public ResourceServerProperties getProviderResource() {
         ResourceServerProperties resourceServerProperties = new ResourceServerProperties();
         resourceServerProperties.setUserInfoUri("https://graph.facebook.com/me?fields=id,name,email");
 
@@ -50,12 +55,12 @@ public class FacebookFilter{
     }
 
     @Bean(name="facebookFilter")
-    public OAuth2ClientAuthenticationProcessingFilter createFilter(OAuth2ClientContext oAuth2ClientContext) {
+    public OAuth2ClientAuthenticationProcessingFilter createFilter() {
 
         OAuth2ClientAuthenticationProcessingFilter facebookFilter = new OAuth2ClientAuthenticationProcessingFilter("/login/facebook");
-        OAuth2RestTemplate facebookTemplate = new OAuth2RestTemplate(facebook(), oAuth2ClientContext);
+        OAuth2RestTemplate facebookTemplate = new OAuth2RestTemplate(getClient(), oAuth2ClientContext);
         facebookFilter.setRestTemplate(facebookTemplate);
-        facebookFilter.setTokenServices(new FacebookCustomUserInfoTokenService(facebookResource().getUserInfoUri(), facebook().getClientId()));
+        facebookFilter.setTokenServices(new FacebookCustomUserInfoTokenService(getProviderResource().getUserInfoUri(), getClient().getClientId()));
 
         return facebookFilter;
     }
