@@ -27,6 +27,7 @@
     Logged in as: <span ng-bind="home.user"></span><br>
     Email: <span ng-bind="home.email"></span><br>
     Id: <span ng-bind="home.id"></span><br>
+    Token: <span ng-bind="home.token"></span><br>
     <div>
         <button ng-click="home.logout()" class="btn btn-primary">Logout</button>
     </div>
@@ -47,6 +48,7 @@
 							    self.user = data.userAuthentication.details.userName;
 							    self.email = data.userAuthentication.details.userEmail;
 								self.id = data.userAuthentication.details.userId;
+								self.token = data.userAuthentication.details.token;
 							    self.authenticated = true;
 							}
 							else
