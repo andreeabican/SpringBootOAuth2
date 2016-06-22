@@ -1,6 +1,6 @@
 package Andreea.Bican.impl.Oauth2.FacebookAuthentication;
 
-import Andreea.Bican.impl.AccessToken;
+import Andreea.Bican.impl.IAccessToken;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -8,7 +8,7 @@ import java.net.URL;
 /**
  * Created by andre on 21.06.2016.
  */
-public class FacebookAccessToken implements AccessToken{
+public class FacebookAccessToken implements IAccessToken {
 
     private final String USER_AGENT = "Mozilla/5.0";
 
