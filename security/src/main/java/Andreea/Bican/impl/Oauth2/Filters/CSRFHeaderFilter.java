@@ -19,7 +19,7 @@ import java.io.IOException;
  */
 public class CSRFHeaderFilter implements IFilter{
 
-    @Bean(name="csfrHeaderFilter")
+    @Bean(name="csrfHeaderFilter")
     public Filter createFilter() {
         return new OncePerRequestFilter() {
 
