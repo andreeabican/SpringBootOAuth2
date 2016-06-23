@@ -21,14 +21,13 @@ public class GoogleCustomUserInfoTokenService extends UserInfoTokenServices {
 
     public OAuth2Authentication loadAuthentication(String accessToken) throws AuthenticationException
     {
-        CurrentUser.setAccessToken(accessToken);
-        CurrentUser.setProvider("google");
         OAuth2Authentication auth = super.loadAuthentication(accessToken);
         if (userIsKnown(getUserDetails(auth))) {
             getUserDetails(auth).put("userId", getUserId(getUserDetails(auth)));
             getUserDetails(auth).put("userEmail", getUserEmail(getUserDetails(auth)));
             getUserDetails(auth).put("userName", getUserName(getUserDetails(auth)));
             getUserDetails(auth).put("token", accessToken);
+            getUserDetails(auth).put("provider", "Google");
         }
         else {
             throw new UsernameNotFoundException("Unknown user: " + getUserEmail(getUserDetails(auth)));
@@ -50,7 +49,6 @@ public class GoogleCustomUserInfoTokenService extends UserInfoTokenServices {
     {
         if(userDetails.containsKey("displayName")){
             String userName = (String) userDetails.get("displayName");
-            CurrentUser.setUserName(userName);
             return userName;
         }
         return "unknown";
@@ -63,7 +61,8 @@ public class GoogleCustomUserInfoTokenService extends UserInfoTokenServices {
                     (List<Map<String, Object>>) userDetails.get("emails");
             for (Map<String, Object> emailAccount : emails) {
                 if (emailAccount.containsKey("value")) {
-                    return (String)emailAccount.get("value");
+                    String email = (String) emailAccount.get("value");
+                    return email;
                 }
             }
         }

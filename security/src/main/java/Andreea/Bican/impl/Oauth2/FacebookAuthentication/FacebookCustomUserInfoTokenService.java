@@ -20,14 +20,13 @@ public class FacebookCustomUserInfoTokenService extends UserInfoTokenServices {
 
     public OAuth2Authentication loadAuthentication(String accessToken) throws AuthenticationException
     {
-        CurrentUser.setAccessToken(accessToken);
-        CurrentUser.setProvider("facebook");
         OAuth2Authentication auth = super.loadAuthentication(accessToken);
         if (userIsKnown(getUserDetails(auth))) {
             getUserDetails(auth).put("userId", getUserId(getUserDetails(auth)));
             getUserDetails(auth).put("userEmail", getUserEmail(getUserDetails(auth)));
             getUserDetails(auth).put("userName", getUserName(getUserDetails(auth)));
             getUserDetails(auth).put("token", accessToken);
+            getUserDetails(auth).put("provider", "Facebook");
         }
         else {
             throw new UsernameNotFoundException("Unknown user: " + getUserEmail(getUserDetails(auth)));
@@ -47,7 +46,6 @@ public class FacebookCustomUserInfoTokenService extends UserInfoTokenServices {
     {
         if(userDetails.containsKey("name")){
             String userName = (String) userDetails.get("name");
-            CurrentUser.setUserName(userName);
             return userName;
         }
         return "unknown";
@@ -56,7 +54,8 @@ public class FacebookCustomUserInfoTokenService extends UserInfoTokenServices {
     private String getUserEmail(Map<String, Object> userDetails)
     {
         if(userDetails.containsKey("email")){
-            return (String) userDetails.get("email");
+            String email = (String) userDetails.get("email");
+            return email;
         }
         return "unknown";
     }
