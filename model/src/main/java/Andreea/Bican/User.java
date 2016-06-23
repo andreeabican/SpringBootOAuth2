@@ -1,44 +1,29 @@
 package Andreea.Bican;
 
-import java.security.Principal;
-import java.util.UUID;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by andre on 26.05.2016.
  */
-public class User implements Principal{
-    static UUID uuid;
-    private String userName;
-    private String id;
+public class User {
+    private String name;
     private String email;
-    private boolean authority;
+    private String token;
+    private String provider;
+    private String id;
+    private HashSet<String> authorities;
 
-    public User() {}
-
-    public User(String userName) { userName = userName; }
-
-    public UUID getUUID() {
-        return uuid;
+    public User() {
+        authorities = new HashSet<String>();
     }
 
-    public void setUuid() {
-        this.uuid = UUID.randomUUID();
+    public String getName() {
+        return name;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -49,12 +34,29 @@ public class User implements Principal{
         this.email = email;
     }
 
-    public boolean getAuthority() {  return authority; }
+    public void setProvider(String provider){ this.provider = provider; }
 
-    public void setAuthority(boolean authority) { this.authority = authority; }
+    public String getProvider(){ return provider; }
 
-    @Override
-    public String getName() {
-        return userName;
+    public void setToken(String token){ this.token = token; }
+
+    public String getToken(){ return token; }
+
+    public void setId(String id){ this.id = id; }
+
+    public String getId(){ return id; }
+
+    public Set<String> getAuthorities() {
+        return authorities;
+        /* the following is a more protected version of get for authorities --- if it were desired to prevent direct access to the internal data object
+        HashSet<String> copyAuthorities = new HashSet<String>(authorities.size());
+        copyAuthorities.addAll(authorities);
+        return copyAuthorities;
+        */
+    };
+
+    public void setAuthorities(Set<String> authorities) {
+        this.authorities.clear();
+        this.authorities.addAll(authorities);
     }
 }
