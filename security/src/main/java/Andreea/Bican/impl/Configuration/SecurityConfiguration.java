@@ -1,6 +1,6 @@
 package Andreea.Bican.impl.Configuration;
 
-import Andreea.Bican.impl.Oauth2.Filters.CSFRHeaderFilter;
+import Andreea.Bican.impl.Oauth2.Filters.CSRFHeaderFilter;
 import Andreea.Bican.impl.Oauth2.FacebookAuthentication.FacebookFilter;
 import Andreea.Bican.impl.Oauth2.GoogleAuthentication.GoogleFilter;
 import Andreea.Bican.impl.Oauth2.Filters.ProviderFilter;
@@ -25,7 +25,7 @@ import javax.servlet.Filter;
 
 
 @Configuration
-@Import({FacebookFilter.class, GoogleFilter.class, ProviderFilter.class, CSFRHeaderFilter.class})
+@Import({FacebookFilter.class, GoogleFilter.class, ProviderFilter.class, CSRFHeaderFilter.class})
 @EnableOAuth2Client
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
