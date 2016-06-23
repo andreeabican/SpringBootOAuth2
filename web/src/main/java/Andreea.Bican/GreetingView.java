@@ -12,7 +12,7 @@ public class GreetingView {
     @RequestMapping("/greeting")
     public String greeting() {
         if(CurrentUser.isAuthenticated()) {
-            return "Hello user " + CurrentUser.getUserName();
+            return "Hello user " + CurrentUser.getUser().getName();
         }else{
             return "Hello, annonymous";
         }
