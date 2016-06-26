@@ -1,9 +1,11 @@
 package Andreea.Bican.impl.Configuration;
 
-import Andreea.Bican.impl.Oauth2.Filters.CSRFHeaderFilter;
+import Andreea.Bican.User;
+import Andreea.Bican.impl.CurrentUsersServiceImpl;
 import Andreea.Bican.impl.Oauth2.FacebookAuthentication.FacebookFilter;
-import Andreea.Bican.impl.Oauth2.GoogleAuthentication.GoogleFilter;
+import Andreea.Bican.impl.Oauth2.Filters.CSRFHeaderFilter;
 import Andreea.Bican.impl.Oauth2.Filters.ProviderFilter;
+import Andreea.Bican.impl.Oauth2.GoogleAuthentication.GoogleFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
@@ -22,10 +24,11 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.web.filter.CompositeFilter;
 
 import javax.servlet.Filter;
+import java.util.HashMap;
 
 
 @Configuration
-@Import({FacebookFilter.class, GoogleFilter.class, ProviderFilter.class, CSRFHeaderFilter.class})
+@Import({FacebookFilter.class, GoogleFilter.class, ProviderFilter.class, CSRFHeaderFilter.class, CurrentUsersServiceImpl.class})
 @EnableOAuth2Client
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
@@ -58,6 +61,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .addFilterBefore(compositeFilter, BasicAuthenticationFilter.class);
     }
 
+    @Bean(name = "listOfUsers")
+    public HashMap<String, User> createListOfUsers(){
+        return new HashMap<String, User>();
+    }
+
     @Bean
     public FilterRegistrationBean oauth2ClientFilterRegistration(
             OAuth2ClientContextFilter filter) {
@@ -66,7 +74,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         registration.setOrder(-100);
         return registration;
     }
-
     /*
     * Spring uses HttpSessionCsrfTokenRepository which by default
     * gives header name for CSRF as X-XSRF-TOKEN, but in order to use
