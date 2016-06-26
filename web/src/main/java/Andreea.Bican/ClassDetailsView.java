@@ -16,12 +16,18 @@ public class ClassDetailsView {
     private ClassService classService;
 
     @RequestMapping(value = "/classdetails", method = RequestMethod.GET)
-    public String getClassMusic(@RequestHeader("id")int id, @RequestHeader("details")String details){
+    public String getDetails(@RequestHeader(value = "id")int id,
+                                @RequestHeader(value = "details", required = false)String details){
         Class clas =  classService.getClass(id);
         if(clas == null){
             return "Class not found";
         }
-        if(details.equals("style")){
+        if(details == null){
+            return "class_id: " + id +
+                    "name: " + clas.getName() +
+                    "style: " + clas.getStyle().getName() +
+                    "description: " + clas.getDescription();
+        }else if(details.equals("style")){
             return clas.getStyle().getName();
         }else if(details.equals("name")){
             return clas.getName();
@@ -29,6 +35,6 @@ public class ClassDetailsView {
             return clas.getDescription();
         }
 
-        return "";
+        return "Requested details don't exist";
     }
 }
