@@ -1,15 +1,16 @@
 package Andreea.Bican.impl;
 
-import java.util.HashMap;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.List;
+import Andreea.Bican.Authorities;
+import Andreea.Bican.AuthoritiesRepository;
+import Andreea.Bican.User;
+import Andreea.Bican.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import Andreea.Bican.User;
-import Andreea.Bican.Authorities;
-import Andreea.Bican.UserRepository;
-import Andreea.Bican.AuthoritiesRepository;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Repository
 public class UserRepositoryHardcoded implements UserRepository {
