@@ -1,11 +1,14 @@
 package Andreea.Bican.impl.Configuration;
 
-import Andreea.Bican.CurrentUser;
+import Andreea.Bican.CurrentUsersService;
 import Andreea.Bican.User;
 import Andreea.Bican.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.util.Map;
@@ -13,35 +16,37 @@ import java.util.Map;
 /**
  * Created by andre on 23.06.2016.
  */
-public class SecurityCurrentContext {
+@Service
+public class SecurityCurrentContext{
 
     @Autowired
     private UserService userService;
 
-    public  void setCurrentUser(Principal principal)
+    @Autowired
+    private CurrentUsersService currentUsersService;
+
+    public  void setCurrentUser()
     {
-        if (principal == null) {
-            // if there is no user logged in
-            CurrentUser.setUser(null);
-        }else {
-            OAuth2Authentication oAuth2authentication = (OAuth2Authentication) principal;
-            Authentication userAuthentication = oAuth2authentication.getUserAuthentication();
-            if (!userAuthentication.isAuthenticated()) {
-                CurrentUser.setUser(null);
-            }
+        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+        if (principal != null) {
+            OAuth2Authentication oAuth2Authentication = (OAuth2Authentication) principal;
+            Authentication userAuthentication = oAuth2Authentication.getUserAuthentication();
+
             Map<String, Object> userDetails = (Map<String, Object>) userAuthentication.getDetails();
-            if (userDetails == null) {
-                CurrentUser.setUser(null);
-            } else {
-                CurrentUser.setUser(getUser(userDetails));
-            }
+                currentUsersService.addLoggedUser(getUserToken(userDetails), getUserEmail(userDetails));
         }
     }
 
-    public User getUserFromRepository()
+    public User getCurrentUser(String token)
+    {
+        setCurrentUser();
+        return currentUsersService.getLoggedUserByToken(token);
+    }
+
+   /* public User getUserFromRepository()
     {
         return userService.getUser(CurrentUser.getUser().getEmail());
-    }
+    }*/
 
     private User getUser(Map<String, Object> userDetails)
     {
@@ -105,5 +110,10 @@ public class SecurityCurrentContext {
             return null;
         }
         return userId;
+    }
+
+    private OAuth2AccessToken getAccessToken(Map<String, Object> userDetails)
+    {
+        return (OAuth2AccessToken) userDetails.get("accessToken");
     }
 }
