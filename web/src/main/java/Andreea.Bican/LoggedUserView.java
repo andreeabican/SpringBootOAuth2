@@ -15,8 +15,8 @@ public class LoggedUserView {
 
     ProviderAccessToken providerAccessToken;
 
-    @RequestMapping(value="/danceclasses", method = RequestMethod.GET)
-    public String danceClasses(@RequestHeader("token")String token) throws Exception {
+    @RequestMapping(value="/loggedusersview", method = RequestMethod.GET)
+    public String danceClasses(@RequestHeader(value = "token")String token) throws Exception {
         providerAccessToken = new ProviderAccessToken();
         IAccessToken accessToken = providerAccessToken.getProviderAccessToken();
 
