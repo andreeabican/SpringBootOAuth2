@@ -1,6 +1,6 @@
 package Andreea.Bican;
 
-import Andreea.Bican.impl.Configuration.SecurityCurrentContext;
+import Andreea.Bican.impl.CurrentContextServiceImpl;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +16,7 @@ import java.security.Principal;
 public class ApiController
 {
     @Autowired
-    SecurityCurrentContext securityCurrentContext;
+    CurrentContextServiceImpl securityCurrentContext;
 
     @RequestMapping("/user")
     public Principal user(Principal principal) throws IOException, ParseException {
