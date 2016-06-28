@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class StudentListServiceImpl implements StudentListService {
@@ -16,6 +17,18 @@ public class StudentListServiceImpl implements StudentListService {
 
     public List<StudentList> getStudentLists(int classId) {
         return studentListRepository.getStudentLists(classId);
+    }
+
+    public boolean hasUserAuthorities(Set<String> userAuthorities, StudentList studentList){
+        List<String> reqiredAuthorities = studentList.getAuthorities();
+        for(String requiredAuthority : reqiredAuthorities){
+            for(String userAuthority : userAuthorities){
+                if(userAuthority.equals(requiredAuthority)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }
