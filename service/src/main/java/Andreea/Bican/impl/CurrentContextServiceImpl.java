@@ -39,7 +39,6 @@ public class CurrentContextServiceImpl implements CurrentContextService {
 
     public User getCurrentUser(String token)
     {
-        setCurrentUser();
         return currentUsersService.getLoggedUserByToken(token);
     }
 
