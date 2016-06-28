@@ -28,7 +28,6 @@ public class ProviderFilter implements IFilter{
     public CompositeFilter createFilter() {
         CompositeFilter filter = new CompositeFilter();
         List<Filter> filters = new ArrayList<>();
-        System.out.println("Intra in sso add Filter");
 
         filters.add(facebookFilter);
         filters.add(googleFilter);
