@@ -3,7 +3,7 @@ package Andreea.Bican.BrowserViews;
 import Andreea.Bican.Student;
 import Andreea.Bican.StudentService;
 import Andreea.Bican.User;
-import Andreea.Bican.impl.Configuration.SecurityCurrentContext;
+import Andreea.Bican.impl.CurrentContextServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,11 +22,11 @@ public class StudentView {
     @Autowired
     private StudentService studentService;
 
-    private SecurityCurrentContext securityCurrentContext;
+    private CurrentContextServiceImpl securityCurrentContext;
 
     @RequestMapping("/student")
     public String student(Principal principal, @RequestHeader(value = "token")String token) {
-        securityCurrentContext = new SecurityCurrentContext();
+        securityCurrentContext = new CurrentContextServiceImpl();
         User currentUser = securityCurrentContext.getCurrentUser(token);
         if (principal == null) {
             return "You need to authenticate";
