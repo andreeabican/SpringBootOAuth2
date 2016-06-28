@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -27,8 +28,7 @@ public class StudentListRepositoryHardcoded implements StudentListRepository {
                 foundStudentList.setStudentListId(studentLists.get(studentListKey).getStudentListId());
                 foundStudentList.setClassId(studentLists.get(studentListKey).getClassId());
                 String authoritiesString = studentLists.get(studentListKey).getAuthorities().trim();
-               // foundStudentList.setAuthorities(Arrays.asList(authoritiesString.split("\\s*,\\s*")));
-                foundStudentList.setAuthorities(authoritiesString);
+                foundStudentList.setAuthorities(Arrays.asList(authoritiesString.split("\\s*,\\s*")));
                 foundStudentLists.add(foundStudentList);
             }
         }
