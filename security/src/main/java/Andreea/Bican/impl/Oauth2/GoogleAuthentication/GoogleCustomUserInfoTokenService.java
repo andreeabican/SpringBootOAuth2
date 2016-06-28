@@ -1,11 +1,14 @@
 package Andreea.Bican.impl.Oauth2.GoogleAuthentication;
 
-import Andreea.Bican.CurrentUser;
+import Andreea.Bican.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +17,7 @@ import java.util.Map;
  */
 public class GoogleCustomUserInfoTokenService extends UserInfoTokenServices {
 
+
     public GoogleCustomUserInfoTokenService(String userInfoEndpointUrl, String clientId)
     {
         super(userInfoEndpointUrl, clientId);
@@ -21,6 +25,7 @@ public class GoogleCustomUserInfoTokenService extends UserInfoTokenServices {
 
     public OAuth2Authentication loadAuthentication(String accessToken) throws AuthenticationException
     {
+
         OAuth2Authentication auth = super.loadAuthentication(accessToken);
         if (userIsKnown(getUserDetails(auth))) {
             getUserDetails(auth).put("userId", getUserId(getUserDetails(auth)));

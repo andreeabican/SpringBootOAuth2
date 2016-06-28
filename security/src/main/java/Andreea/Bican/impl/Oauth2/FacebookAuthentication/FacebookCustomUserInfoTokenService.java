@@ -1,17 +1,23 @@
 package Andreea.Bican.impl.Oauth2.FacebookAuthentication;
 
-import Andreea.Bican.CurrentUser;
+import Andreea.Bican.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by andre on 13.06.2016.
  */
+
 public class FacebookCustomUserInfoTokenService extends UserInfoTokenServices {
+
+
 
     public FacebookCustomUserInfoTokenService(String userInfoEndpointUrl, String clientId)
     {
