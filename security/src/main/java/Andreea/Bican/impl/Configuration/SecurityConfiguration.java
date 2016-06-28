@@ -4,7 +4,7 @@ import Andreea.Bican.User;
 import Andreea.Bican.impl.CurrentUsersServiceImpl;
 import Andreea.Bican.impl.Oauth2.FacebookAuthentication.FacebookFilter;
 import Andreea.Bican.impl.Oauth2.Filters.CSRFHeaderFilter;
-import Andreea.Bican.impl.Oauth2.Filters.ProviderFilter;
+import Andreea.Bican.impl.Oauth2.Filters.ProvidersCompositeFilter;
 import Andreea.Bican.impl.Oauth2.GoogleAuthentication.GoogleFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,23 +24,21 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.web.filter.CompositeFilter;
 
 import javax.servlet.Filter;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
 @Configuration
-@Import({FacebookFilter.class, GoogleFilter.class, ProviderFilter.class, CSRFHeaderFilter.class, CurrentUsersServiceImpl.class})
+@Import({FacebookFilter.class, GoogleFilter.class, ProvidersCompositeFilter.class, CSRFHeaderFilter.class, CurrentUsersServiceImpl.class})
 @EnableOAuth2Client
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-
-    @Autowired
-    OAuth2ClientContext oauth2ClientContext;
 
     @Autowired
     @Qualifier("csrfHeaderFilter")
     Filter csrfHeaderFilter;
 
     @Autowired
-    @Qualifier("providerFilter")
+    @Qualifier("compositeFilter")
     CompositeFilter compositeFilter;
 
     @Override
@@ -64,6 +62,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean(name = "listOfUsers")
     public HashMap<String, User> createListOfUsers(){
         return new HashMap<String, User>();
+    }
+
+
+    @Bean(name="listOfFilters")
+    public ArrayList<Filter> createListOfFilters(){
+        return new ArrayList<Filter>();
     }
 
     @Bean
