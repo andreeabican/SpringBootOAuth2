@@ -6,13 +6,16 @@ import Andreea.Bican.impl.Oauth2.FacebookAuthentication.FacebookAccessToken;
 import Andreea.Bican.impl.Oauth2.GoogleAuthentication.GoogleAccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Import;
 
 import java.util.HashMap;
 
 /**
  * Created by andre on 24.06.2016.
  */
+@Import({SecurityConfiguration.class})
 public class ProviderAccessToken {
+
 
     @Autowired
     @Qualifier("listOfUsers")
