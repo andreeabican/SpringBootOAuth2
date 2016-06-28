@@ -1,8 +1,6 @@
 package Andreea.Bican.WebApiViews;
 
-import Andreea.Bican.StudentList;
-import Andreea.Bican.StudentListService;
-import Andreea.Bican.User;
+import Andreea.Bican.*;
 import Andreea.Bican.impl.Configuration.ProviderAccessToken;
 import Andreea.Bican.impl.CurrentContextServiceImpl;
 import Andreea.Bican.impl.IAccessToken;
@@ -27,36 +25,55 @@ public class StudentListView {
     @Autowired
     CurrentContextServiceImpl currentContextService;
 
+    @Autowired
+    StudentListMembershipService studentListMembershipService;
+
+
+    @Autowired
+    StudentService studentService;
+
     @RequestMapping("/studentlists")
     public String studentList(@RequestHeader(value = "classId")int classId,
                               @RequestHeader(value = "token", required = false)String token) throws Exception {
         //TODO: add appropriate user authority checking here (Authorized user has authority which is in set of authorities for list of lists)
         String outputString = "";
+
        if(token != null) {
            List<StudentList> studentLists = studentListService.getStudentLists(classId); //hardcoded example
            if (studentLists == null) {
                return "null";
            }
-           Set<String> authorities = null;
+           Set<String> userAuthorities = null;
            if (checkAccessToken(token)) {
                User user = currentContextService.getCurrentUser(token);
-               authorities = user.getAuthorities();
-           }
-           outputString = "student lists which have class id " + Integer.toString(classId) + ":";
-           for (StudentList studentList : studentLists) {
-               if (!authorities.isEmpty() && authorities.contains(studentList.getAuthorities())) {
-                   outputString = outputString +
-                           "<br>&nbsp;" + Integer.toString(studentList.getStudentListId()) + ", (required authority : in";
-                   //Iterator<String> authorityIterator = studentList.getAuthorities().iterator();
-                   outputString = outputString + " " + studentList.getAuthorities();
-                   outputString = outputString + ")";
-               } else {
-                   outputString += "You don't have authorities to see "
-                           + Integer.toString(studentList.getStudentListId());
+               userAuthorities = user.getAuthorities();
+               outputString = "student lists which have class id " + Integer.toString(classId) + ":";
+               for (StudentList studentList : studentLists) {
+                   if (studentListService.hasUserAuthorities(userAuthorities, studentList)) {
+                       outputString += "User has the authority to see student list "
+                               + Integer.toString(studentList.getClassId()) + "\n";
+                       outputString += getNames(studentListMembershipService.getStudentListMemberships(classId));
+                   } else {
+                       outputString += "You don't have authorities to see "
+                               + Integer.toString(studentList.getStudentListId());
+                   }
                }
+            }else{
+                   return "Token is not valid";
            }
+           return outputString;
        }
-        return outputString;
+        return "Required token";
+    }
+
+    public String getNames(List<StudentListMembership> listOfStudentsEnroledInClass){
+        String names = "";
+        for( StudentListMembership name : listOfStudentsEnroledInClass){
+            System.out.println(studentService.getStudent(name.getStudentId()).getName());
+            names += studentService.getStudent(name.getStudentId()).getName()
+                    + " ";
+        }
+        return names;
     }
 
     public boolean checkAccessToken(String token) throws Exception {
