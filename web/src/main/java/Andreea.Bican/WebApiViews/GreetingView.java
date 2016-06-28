@@ -5,10 +5,13 @@ import Andreea.Bican.impl.Configuration.ProviderAccessToken;
 import Andreea.Bican.impl.CurrentContextServiceImpl;
 import Andreea.Bican.impl.IAccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
 
 /**
  * Created by andre on 21.06.2016.
@@ -16,14 +19,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class GreetingView {
 
-    ProviderAccessToken providerAccessToken;
+    @Autowired
+    @Qualifier("listOfUsers")
+    HashMap<String, User> loggedUsersList;
 
     @Autowired
     CurrentContextServiceImpl currentContextService;
 
     @RequestMapping(value="/greeting", method = RequestMethod.GET)
     public String danceClasses(@RequestHeader(value = "token")String token) throws Exception {
-        providerAccessToken = new ProviderAccessToken();
+        ProviderAccessToken providerAccessToken = new ProviderAccessToken();
         IAccessToken accessToken = providerAccessToken.getProviderAccessToken(token);
 
         User user = currentContextService.getCurrentUser(token);
