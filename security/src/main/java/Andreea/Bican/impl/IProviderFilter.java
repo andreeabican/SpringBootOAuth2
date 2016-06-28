@@ -1,6 +1,5 @@
 package Andreea.Bican.impl;
 
-import Andreea.Bican.impl.IFilter;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
 
@@ -16,4 +15,6 @@ public interface IProviderFilter extends IFilter {
     ResourceServerProperties getProviderResource();
 
     OAuth2ProtectedResourceDetails getClient();
+
+    int addFilter();
 }

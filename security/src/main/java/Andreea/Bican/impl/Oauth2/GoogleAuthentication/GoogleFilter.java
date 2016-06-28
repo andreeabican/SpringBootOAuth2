@@ -2,6 +2,7 @@ package Andreea.Bican.impl.Oauth2.GoogleAuthentication;
 
 import Andreea.Bican.impl.IProviderFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
@@ -10,6 +11,7 @@ import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticat
 import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 
+import javax.servlet.Filter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +21,17 @@ import static org.springframework.security.oauth2.common.AuthenticationScheme.qu
  * Created by andre on 13.06.2016.
  */
 public class GoogleFilter implements IProviderFilter {
+
+    @Autowired
+    @Qualifier("listOfFilters")
+    ArrayList<Filter> filters;
+
+    @Bean(name="googleFilter")
+    public int addFilter()
+    {
+        filters.add(createFilter());
+        return 1;
+    }
 
     @Autowired
     OAuth2ClientContext oAuth2ClientContext;
@@ -52,7 +65,7 @@ public class GoogleFilter implements IProviderFilter {
         return resourceServerProperties;
     }
 
-    @Bean(name="googleFilter")
+   // @Bean(name="googleFilter")
     public OAuth2ClientAuthenticationProcessingFilter createFilter() {
 
         OAuth2ClientAuthenticationProcessingFilter googleFilter = new OAuth2ClientAuthenticationProcessingFilter("/login/google");
