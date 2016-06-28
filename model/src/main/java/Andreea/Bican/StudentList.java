@@ -1,12 +1,14 @@
 package Andreea.Bican;
 
+import java.util.List;
+
 /**
  * Created by andre on 23.06.2016.
  */
 public class StudentList {
     private int studentListId;
     private int classId;
-    private String authorities;
+    private List<String> authorities;
 
     public StudentList() {
     }
@@ -27,11 +29,11 @@ public class StudentList {
         this.classId = classId;
     }
 
-    public String getAuthorities() {
+    public List<String> getAuthorities() {
         return authorities;
     }
 
-    public void setAuthorities(String authorities) {
+    public void setAuthorities(List<String> authorities) {
         this.authorities = authorities;
     }
 
