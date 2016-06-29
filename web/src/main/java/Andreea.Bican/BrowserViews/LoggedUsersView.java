@@ -25,8 +25,10 @@ public class LoggedUsersView {
 
         for(Map.Entry<String, User> user : loggedUsersList.entrySet()) {
             outputString += user.getValue().getName() +
-                    "\"\"\n email" + user.getValue().getEmail() +
-                    "\"\"\n";
+                    "<br /> email: " + user.getValue().getEmail() +
+                    "<br /> id: " + user.getValue().getId() +
+                    "<br /> provider: " + user.getValue().getProvider() +
+                    "<br /> token: " + user.getKey() + "<br /><br />";
         }
         if(loggedUsersList.isEmpty()){
             return "No users";
