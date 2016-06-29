@@ -33,7 +33,7 @@ public class CurrentContextServiceImpl implements CurrentContextService {
             Authentication userAuthentication = oAuth2Authentication.getUserAuthentication();
 
             Map<String, Object> userDetails = (Map<String, Object>) userAuthentication.getDetails();
-                currentUsersService.addLoggedUser(getUserToken(userDetails), getUserEmail(userDetails));
+                currentUsersService.logUser(getUserToken(userDetails), getUserEmail(userDetails));
         }
     }
 
