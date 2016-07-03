@@ -34,15 +34,14 @@ public class TokenServiceImpl implements TokenService {
         JsonFactory jsonFactory = new JacksonFactory();
 
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(transport, jsonFactory,
-                "565779346670-4hqpp1qbqa45go8pue5ncgirsk4rnc1o.apps.googleusercontent.com",
-                "ulAV2AnP1vkezZ1ORN7D9pA6", scopes).build();
+                "client_id",
+                "client_secret", scopes).build();
         GoogleAuthorizationCodeRequestUrl url = flow.newAuthorizationUrl();
         url.setRedirectUri("http://localhost:8181");
         url.setApprovalPrompt("force");
         url.setAccessType("offline");
         String authorize_url = url.build();
 
-        System.out.println(url.getUserInfo());
         // paste into browser to get code
         System.out.println("Put this url into your browser and paste in the access token:");
         System.out.println(authorize_url);
@@ -59,7 +58,7 @@ public class TokenServiceImpl implements TokenService {
         jsonFactory = new JacksonFactory();
 
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(transport, jsonFactory,
-                "565779346670-4hqpp1qbqa45go8pue5ncgirsk4rnc1o.apps.googleusercontent.com", "ulAV2AnP1vkezZ1ORN7D9pA6", scopes).build();
+                "client_id", "client_secret", scopes).build();
         GoogleTokenResponse res = flow.newTokenRequest(code).setRedirectUri("http://localhost:8181").execute();
         String accessToken = res.getAccessToken();
         System.out.println("Token expires in " + res.getExpiresInSeconds());
