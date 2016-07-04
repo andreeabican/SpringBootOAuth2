@@ -1,9 +1,7 @@
 package Andreea.Bican.WebApiViews;
 
 import Andreea.Bican.*;
-import Andreea.Bican.impl.Configuration.ProviderAccessToken;
 import Andreea.Bican.impl.CurrentContextServiceImpl;
-import Andreea.Bican.impl.IAccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +29,9 @@ public class StudentListView {
 
     @Autowired
     StudentService studentService;
+
+    @Autowired
+    TokenService tokenService;
 
     @RequestMapping("/studentlists")
     public String studentList(@RequestHeader(value = "classId")int classId,
@@ -77,15 +78,9 @@ public class StudentListView {
     }
 
     public boolean checkAccessToken(String token) throws Exception {
-        ProviderAccessToken providerAccessToken = new ProviderAccessToken();
-        System.out.println(token);
-        IAccessToken accessToken = providerAccessToken.getProviderAccessToken(token);
-        if (accessToken != null) {
-            if (accessToken.checkToken(token)) {
-                return true;
-            } else {
-                return false;
-            }
+
+        if (tokenService.checkToken(token)) {
+            return true;
         } else {
             return false;
         }
