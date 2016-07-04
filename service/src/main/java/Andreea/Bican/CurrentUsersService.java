@@ -5,7 +5,9 @@ package Andreea.Bican;
  */
 public interface CurrentUsersService {
 
-    void logUser(String token, String id);
+    void logUserForBrowserSessions(String token, String email);
+
+    void logUserForWebApiSessions(String token, String email, String provider);
 
     User getLoggedUserByToken(String token);
 

@@ -28,18 +28,39 @@ public class CurrentUsersServiceImpl implements CurrentUsersService{
     CurrentContextService securityCurrentContextService;
 
     @Override
-    public void logUser(String token, String email) {
+    public void logUserForBrowserSessions(String token, String email) {
         User loggedUser = getLoggedUserByEmail(email);
-        if(loggedUser != null)      //There is no logged user with the current email
+        if (loggedUser != null)      //There is no logged user with the current email
         {
             updateTokenForLoggedUser(token, email);
-        }else{ /* If there is no user logged with current email look in the database
+        } else { /* If there is no user logged with current email look in the database
              and check if the email is there*/
             User userFromRepository = getUserFromRepository(email);
-            if(userFromRepository != null){
+            if (userFromRepository != null) {
                 addUserFromRepository(token, userFromRepository);
-            }else{
+            } else {
                 addUserFromCurrentContext(token);
+            }
+        }
+    }
+
+    @Override
+    public void logUserForWebApiSessions(String token, String email, String provider) {
+        User loggedUser = getLoggedUserByEmail(email);
+        if(loggedUser != null){
+            updateTokenForLoggedUser(token, email);
+        }else {
+            User userFromRepository = userRepository.getUser(email);
+            if (userFromRepository != null) {
+                userFromRepository.setProvider(provider);
+                userFromRepository.setToken(token);
+                loggedUsersList.put(token, userFromRepository);
+            } else {
+                User user = new User();
+                user.setEmail(email);
+                user.setToken(token);
+                user.setProvider(provider);
+                loggedUsersList.put(token, user);
             }
         }
     }
@@ -61,6 +82,7 @@ public class CurrentUsersServiceImpl implements CurrentUsersService{
     }
     @Override
     public User getLoggedUserByToken(String token) {
+        System.out.println("Token token token " + token);
         if(loggedUsersList.containsKey(token)){
             return loggedUsersList.get(token);
         }
@@ -79,6 +101,7 @@ public class CurrentUsersServiceImpl implements CurrentUsersService{
 
     @Override
     public User getUserFromRepository(String email){
+        System.out.println("Searched email is " + email);
         User user = userRepository.getUser(email);
         return user;
     }
