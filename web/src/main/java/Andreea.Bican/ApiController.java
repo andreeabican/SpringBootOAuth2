@@ -20,7 +20,9 @@ public class ApiController
 
     @RequestMapping("/user")
     public Principal user(Principal principal) throws IOException, ParseException {
-        securityCurrentContext.setCurrentUser();
+        if(principal != null) {
+            securityCurrentContext.setCurrentUser();
+        }
         return principal;
     }
 }
