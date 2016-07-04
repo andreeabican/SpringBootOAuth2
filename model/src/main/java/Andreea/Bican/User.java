@@ -19,7 +19,12 @@ public class User {
     }
 
     public String getName() {
-        return name;
+
+        if(name != null) {
+            return name;
+        }else {
+            return "unknown";
+        }
     }
 
     public void setName(String name) {
@@ -27,7 +32,11 @@ public class User {
     }
 
     public String getEmail() {
-        return email;
+        if(email != null){
+            return email;
+        }else{
+            return "unknown";
+        }
     }
 
     public void setEmail(String email) {
@@ -36,15 +45,33 @@ public class User {
 
     public void setProvider(String provider){ this.provider = provider; }
 
-    public String getProvider(){ return provider; }
+    public String getProvider() {
+        if (provider != null) {
+            return provider;
+        } else {
+            return "unknown";
+        }
+    }
 
     public void setToken(String token){ this.token = token; }
 
-    public String getToken(){ return token; }
+    public String getToken() {
+        if (token != null) {
+            return token;
+        } else {
+            return "unknown";
+        }
+    }
 
     public void setId(String id){ this.id = id; }
 
-    public String getId(){ return id; }
+    public String getId(){
+        if(id != null){
+            return id;
+        }else{
+            return "unknown";
+        }
+    }
 
     public Set<String> getAuthorities() {
         return authorities;
