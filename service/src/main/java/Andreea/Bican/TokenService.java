@@ -1,5 +1,7 @@
 package Andreea.Bican;
 
+import org.json.simple.parser.ParseException;
+
 import java.io.IOException;
 
 /**
@@ -9,5 +11,11 @@ public interface TokenService {
 
     String getGoogleAuthorizationCode() throws Exception;
 
-    String getAccessToken(String code) throws IOException;
+    String getGoogleAccessToken(String code) throws IOException;
+
+    String sendGet(String url) throws Exception;
+
+    boolean checkToken(String URL) throws Exception;
+
+    String getEmailFromGoogleAccessToken(String token) throws IOException, ParseException;
 }
