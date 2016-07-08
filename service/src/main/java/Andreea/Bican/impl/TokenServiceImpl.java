@@ -4,6 +4,7 @@ import Andreea.Bican.TokenService;
 import Andreea.Bican.User;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeRequestUrl;
+import com.google.api.client.googleapis.auth.oauth2.GoogleRefreshTokenRequest;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -79,12 +80,49 @@ public class TokenServiceImpl implements TokenService {
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(transport, jsonFactory,
                 "565779346670-4hqpp1qbqa45go8pue5ncgirsk4rnc1o.apps.googleusercontent.com", "ulAV2AnP1vkezZ1ORN7D9pA6", scopes).build();
         GoogleTokenResponse res = flow.newTokenRequest(code).setRedirectUri("http://localhost:8181").execute();
+        System.out.println("Refresh access token:");
+        System.out.println(res.getRefreshToken());
+
         String accessToken = res.getAccessToken();
         System.out.println("Token expires in " + res.getExpiresInSeconds());
 
         System.out.println("access:");
         System.out.println(accessToken);
 
+        return accessToken;
+    }
+
+    @Override
+    public String getGoogleRefreshToken(String code) throws IOException {
+
+        scopes = new ArrayList<String>();
+        scopes.add("email");
+        transport = new NetHttpTransport();
+        jsonFactory = new JacksonFactory();
+        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(transport, jsonFactory,
+                "565779346670-4hqpp1qbqa45go8pue5ncgirsk4rnc1o.apps.googleusercontent.com", "ulAV2AnP1vkezZ1ORN7D9pA6", scopes).build();
+        GoogleTokenResponse res = flow.newTokenRequest(code).setRedirectUri("http://localhost:8181").execute();
+        System.out.println("Refresh access token:");
+        String refreshToken = res.getRefreshToken();
+        System.out.println(refreshToken);
+
+        return refreshToken;
+    }
+
+    @Override
+    public String getGoogleAccessTokenByRefreshToken(String refreshToken) throws IOException {
+        scopes = new ArrayList<String>();
+        scopes.add("email");
+        transport = new NetHttpTransport();
+        jsonFactory = new JacksonFactory();
+
+        GoogleTokenResponse res = new GoogleTokenResponse();
+        res.setRefreshToken(refreshToken);
+
+        GoogleRefreshTokenRequest refreshTokenRequest = new GoogleRefreshTokenRequest(transport, jsonFactory, refreshToken,
+                "565779346670-4hqpp1qbqa45go8pue5ncgirsk4rnc1o.apps.googleusercontent.com", "ulAV2AnP1vkezZ1ORN7D9pA6");
+        GoogleTokenResponse googleTokenResponse = refreshTokenRequest.execute();
+        String accessToken = googleTokenResponse.getAccessToken();
         return accessToken;
     }
 
@@ -123,6 +161,11 @@ public class TokenServiceImpl implements TokenService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void storeEmailAndRefreshToken(String email, String refreshToken) {
+
     }
 
     @Override

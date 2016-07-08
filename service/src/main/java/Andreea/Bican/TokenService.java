@@ -13,9 +13,15 @@ public interface TokenService {
 
     String getGoogleAccessToken(String code) throws IOException;
 
+    String getGoogleRefreshToken(String code) throws IOException;
+
+    String getGoogleAccessTokenByRefreshToken(String refreshToken) throws IOException;
+
     String sendGet(String url) throws Exception;
 
     boolean checkToken(String URL) throws Exception;
+
+    void storeEmailAndRefreshToken(String email, String refreshToken);
 
     String getEmailFromGoogleAccessToken(String token) throws IOException, ParseException;
 }
