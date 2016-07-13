@@ -28,6 +28,7 @@
     Email: <span ng-bind="home.email"></span><br>
     Id: <span ng-bind="home.id"></span><br>
     Token: <span ng-bind="home.token"></span><br>
+    JSessionId: <span ng-bind="home.jsessionid"></span><br>
     <div>
         <button ng-click="home.logout()" class="btn btn-primary">Logout</button>
     </div>
@@ -49,6 +50,7 @@
 							    self.email = data.userAuthentication.details.userEmail;
 								self.id = data.userAuthentication.details.userId;
 								self.token = data.userAuthentication.details.token;
+								self.jsessionid = data.userAuthentication.details.JSessionId;
 							    self.authenticated = true;
 							}
 							else
