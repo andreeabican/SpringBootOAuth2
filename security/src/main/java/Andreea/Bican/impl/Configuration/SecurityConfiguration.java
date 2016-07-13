@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -44,10 +43,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .antMatcher("/**")
-                .authorizeRequests()
-                .antMatchers("/", "/login**", "/webjars/**")
-                .permitAll()
+                .antMatcher("/**").authorizeRequests()
+                .antMatchers("/", "/login**", "/webjars/**").permitAll()
                 .and()
                     .logout()
                     .logoutSuccessUrl("/")
@@ -69,6 +66,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public ArrayList<Filter> createListOfFilters(){
         return new ArrayList<Filter>();
     }
+
+    @Bean(name="listOfUsersAndSessionIds")
+    public HashMap<String, String> createListOfUsersAndIds(){ return new HashMap<String, String>(); }
 
     @Bean
     public FilterRegistrationBean oauth2ClientFilterRegistration(
