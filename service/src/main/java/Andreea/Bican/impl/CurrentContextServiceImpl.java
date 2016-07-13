@@ -34,6 +34,7 @@ public class CurrentContextServiceImpl implements CurrentContextService {
 
             Map<String, Object> userDetails = (Map<String, Object>) userAuthentication.getDetails();
                 currentUsersService.logUserForBrowserSessions(getUserToken(userDetails), getUserEmail(userDetails));
+                currentUsersService.addUserAndSessionId(getUserEmail(userDetails), getSessionId(userDetails));
         }
     }
 
@@ -42,10 +43,6 @@ public class CurrentContextServiceImpl implements CurrentContextService {
         return currentUsersService.getLoggedUserByToken(token);
     }
 
-   /* public User getUserFromRepository()
-    {
-        return userService.getUser( CurrentUser.getUser().getEmail());
-    }*/
     public User getUserFromCurrentContext()
     {
         Principal principal = SecurityContextHolder.getContext().getAuthentication();
@@ -121,5 +118,16 @@ public class CurrentContextServiceImpl implements CurrentContextService {
             return null;
         }
         return userId;
+    }
+
+    public String getSessionId(Map<String, Object> userDetails) {
+        if (!userDetails.containsKey("JSessionId")){
+            return null;
+        }
+        String jSessionId = (String)userDetails.get("JSessionId");
+        if(jSessionId.equals("unknown")){
+            return null;
+        }
+        return jSessionId;
     }
 }

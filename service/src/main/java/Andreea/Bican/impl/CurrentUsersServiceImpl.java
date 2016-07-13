@@ -25,7 +25,12 @@ public class CurrentUsersServiceImpl implements CurrentUsersService{
     HashMap<String, User> loggedUsersList;
 
     @Autowired
+    @Qualifier("listOfUsersAndSessionIds")
+    HashMap<String, String> listOfUsersAndSessionIds;
+
+    @Autowired
     CurrentContextService securityCurrentContextService;
+
 
     @Override
     public void logUserForBrowserSessions(String token, String email) {
@@ -43,6 +48,7 @@ public class CurrentUsersServiceImpl implements CurrentUsersService{
             }
         }
     }
+
 
     @Override
     public void logUserForWebApiSessions(String token, String email, String provider) {
@@ -62,6 +68,25 @@ public class CurrentUsersServiceImpl implements CurrentUsersService{
                 user.setProvider(provider);
                 loggedUsersList.put(token, user);
             }
+        }
+    }
+
+    @Override
+    public void addUserAndSessionId(String email, String sessionId) {
+        System.out.println("I add the email "  + email + " and the ssesion id " + sessionId);
+        if(listOfUsersAndSessionIds.containsValue(email)){
+            String key = null;
+            for(Map.Entry<String, String> entry : listOfUsersAndSessionIds.entrySet()){
+                if(entry.getValue().equals(email)){
+                    key = entry.getKey();
+                }
+            }
+            if(key != null){
+                listOfUsersAndSessionIds.remove(key);
+            }
+            listOfUsersAndSessionIds.put(sessionId, email);
+        }else{
+            listOfUsersAndSessionIds.put(sessionId, email);
         }
     }
 
@@ -87,6 +112,16 @@ public class CurrentUsersServiceImpl implements CurrentUsersService{
             return loggedUsersList.get(token);
         }
         return null;
+    }
+
+    @Override
+    public String getEmailBySessionId(String sessionId) {
+        if(listOfUsersAndSessionIds.containsKey(sessionId)){
+            return listOfUsersAndSessionIds.get(sessionId);
+        }else
+        {
+            return "unknown";
+        }
     }
 
     @Override
