@@ -60,12 +60,12 @@ public class TokenServiceImpl implements TokenService {
         url.setRedirectUri("http://localhost:8181");
         url.setApprovalPrompt("force");
         url.setAccessType("offline");
+
         String authorize_url = url.build();
 
         // paste into browser to get code
         System.out.println("Put this url into your browser and paste in the access token:");
         System.out.println(authorize_url);
-
         return authorize_url;
     }
 
