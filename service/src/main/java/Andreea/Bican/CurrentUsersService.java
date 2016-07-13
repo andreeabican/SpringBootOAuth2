@@ -9,7 +9,11 @@ public interface CurrentUsersService {
 
     void logUserForWebApiSessions(String token, String email, String provider);
 
+    void addUserAndSessionId(String email, String sessionId);
+
     User getLoggedUserByToken(String token);
+
+    String getEmailBySessionId(String sessionId);
 
     boolean checkLoggedUser(String token);
 
