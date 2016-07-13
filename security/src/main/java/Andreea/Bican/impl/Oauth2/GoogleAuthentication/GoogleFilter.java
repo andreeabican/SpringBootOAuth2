@@ -1,5 +1,6 @@
 package Andreea.Bican.impl.Oauth2.GoogleAuthentication;
 
+import Andreea.Bican.impl.ClientAppDetails;
 import Andreea.Bican.impl.IProviderFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,18 +24,17 @@ import static org.springframework.security.oauth2.common.AuthenticationScheme.qu
 public class GoogleFilter implements IProviderFilter {
 
     @Autowired
+    OAuth2ClientContext oAuth2ClientContext;
+
+    @Autowired
     @Qualifier("listOfFilters")
     ArrayList<Filter> filters;
 
     @Bean(name="googleFilter")
-    public int addFilter()
-    {
+    public int addFilter() {
         filters.add(createFilter());
         return 1;
     }
-
-    @Autowired
-    OAuth2ClientContext oAuth2ClientContext;
 
     public List<String> createScopesList(){
         List<String> scopes = new ArrayList<>();
@@ -46,14 +46,13 @@ public class GoogleFilter implements IProviderFilter {
     public OAuth2ProtectedResourceDetails getClient() {
 
         AuthorizationCodeResourceDetails authorizationCodeResourceDetails = new AuthorizationCodeResourceDetails();
-        authorizationCodeResourceDetails.setClientId("clientId");
-        authorizationCodeResourceDetails.setClientSecret("clientSecret");
+        authorizationCodeResourceDetails.setClientId(ClientAppDetails.getGoogleClientId());
+        authorizationCodeResourceDetails.setClientSecret(ClientAppDetails.getGoogleClientSecret());
         authorizationCodeResourceDetails.setAccessTokenUri("https://www.googleapis.com/oauth2/v3/token");
         authorizationCodeResourceDetails.setUserAuthorizationUri("https://accounts.google.com/o/oauth2/auth");
         authorizationCodeResourceDetails.setTokenName("oauth_token");
         authorizationCodeResourceDetails.setClientAuthenticationScheme(query);
         authorizationCodeResourceDetails.setScope(createScopesList());
-
         return authorizationCodeResourceDetails;
     }
 
@@ -65,13 +64,13 @@ public class GoogleFilter implements IProviderFilter {
         return resourceServerProperties;
     }
 
-   // @Bean(name="googleFilter")
     public OAuth2ClientAuthenticationProcessingFilter createFilter() {
 
         OAuth2ClientAuthenticationProcessingFilter googleFilter = new OAuth2ClientAuthenticationProcessingFilter("/login/google");
         OAuth2RestTemplate googleTemplate = new OAuth2RestTemplate(getClient(), oAuth2ClientContext);
         googleFilter.setRestTemplate(googleTemplate);
         googleFilter.setTokenServices(new GoogleCustomUserInfoTokenService(getProviderResource().getUserInfoUri(), getClient().getClientId()));
+        googleFilter.setAllowSessionCreation(true);
         return googleFilter;
     }
 }

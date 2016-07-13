@@ -1,5 +1,6 @@
 package Andreea.Bican.impl.Oauth2.FacebookAuthentication;
 
+import Andreea.Bican.impl.ClientAppDetails;
 import Andreea.Bican.impl.IProviderFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -48,8 +49,8 @@ public class FacebookFilter implements IProviderFilter {
     public OAuth2ProtectedResourceDetails getClient() {
        AuthorizationCodeResourceDetails authorizationCodeResourceDetails = new AuthorizationCodeResourceDetails();
 
-        authorizationCodeResourceDetails.setClientId("clientId");
-        authorizationCodeResourceDetails.setClientSecret("clientSecret");
+        authorizationCodeResourceDetails.setClientId(ClientAppDetails.getFacebookClientId());
+        authorizationCodeResourceDetails.setClientSecret(ClientAppDetails.getFacebookClientSecret());
         authorizationCodeResourceDetails.setAccessTokenUri("https://graph.facebook.com/oauth/access_token");
         authorizationCodeResourceDetails.setUserAuthorizationUri("https://www.facebook.com/dialog/oauth");
         authorizationCodeResourceDetails.setTokenName("oauth_token");
