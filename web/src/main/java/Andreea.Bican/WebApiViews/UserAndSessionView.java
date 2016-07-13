@@ -30,10 +30,7 @@ public class UserAndSessionView {
 
         String email = currentUsersService.getEmailBySessionId(sessionID);
         System.out.println("The email is " + email);
-        if(sessionId.equals(sessionID)) {
-            // Username
-            return "This is the name " + sessionID;
-        }
-        return sessionId;
+
+        return email;
     }
 }
