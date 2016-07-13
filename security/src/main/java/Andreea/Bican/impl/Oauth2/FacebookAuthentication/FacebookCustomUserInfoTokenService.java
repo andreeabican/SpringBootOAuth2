@@ -1,23 +1,19 @@
 package Andreea.Bican.impl.Oauth2.FacebookAuthentication;
 
-import Andreea.Bican.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
-import java.util.HashMap;
 import java.util.Map;
+
+import static org.springframework.web.context.request.RequestContextHolder.currentRequestAttributes;
 
 /**
  * Created by andre on 13.06.2016.
  */
 
 public class FacebookCustomUserInfoTokenService extends UserInfoTokenServices {
-
-
 
     public FacebookCustomUserInfoTokenService(String userInfoEndpointUrl, String clientId)
     {
@@ -33,6 +29,7 @@ public class FacebookCustomUserInfoTokenService extends UserInfoTokenServices {
             getUserDetails(auth).put("userName", getUserName(getUserDetails(auth)));
             getUserDetails(auth).put("token", accessToken);
             getUserDetails(auth).put("provider", "Facebook");
+            getUserDetails(auth).put("JSessionId", getJSessionId());
         }
         else {
             throw new UsernameNotFoundException("Unknown user: " + getUserEmail(getUserDetails(auth)));
@@ -46,6 +43,15 @@ public class FacebookCustomUserInfoTokenService extends UserInfoTokenServices {
         if (email.equals("unknown")) return false;
         // look in db here
         return true;
+    }
+
+    private String getJSessionId(){
+        String jsessionId = currentRequestAttributes().getSessionId();
+        if(jsessionId == null){
+            return "No session id";
+        }else{
+            return jsessionId;
+        }
     }
 
     private String getUserName(Map<String, Object> userDetails)

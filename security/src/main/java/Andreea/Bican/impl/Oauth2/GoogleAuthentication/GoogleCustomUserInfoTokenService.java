@@ -1,16 +1,14 @@
 package Andreea.Bican.impl.Oauth2.GoogleAuthentication;
 
-import Andreea.Bican.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.springframework.web.context.request.RequestContextHolder.currentRequestAttributes;
 
 /**
  * Created by andre on 13.06.2016.
@@ -25,7 +23,6 @@ public class GoogleCustomUserInfoTokenService extends UserInfoTokenServices {
 
     public OAuth2Authentication loadAuthentication(String accessToken) throws AuthenticationException
     {
-
         OAuth2Authentication auth = super.loadAuthentication(accessToken);
         if (userIsKnown(getUserDetails(auth))) {
             getUserDetails(auth).put("userId", getUserId(getUserDetails(auth)));
@@ -33,6 +30,7 @@ public class GoogleCustomUserInfoTokenService extends UserInfoTokenServices {
             getUserDetails(auth).put("userName", getUserName(getUserDetails(auth)));
             getUserDetails(auth).put("token", accessToken);
             getUserDetails(auth).put("provider", "Google");
+            getUserDetails(auth).put("JSessionId", getJSessionId());
         }
         else {
             throw new UsernameNotFoundException("Unknown user: " + getUserEmail(getUserDetails(auth)));
@@ -72,6 +70,15 @@ public class GoogleCustomUserInfoTokenService extends UserInfoTokenServices {
             }
         }
         return "unknown";
+    }
+
+    private String getJSessionId(){
+        String jsessionId = currentRequestAttributes().getSessionId();
+        if(jsessionId == null){
+            return "No session id";
+        }else{
+            return jsessionId;
+        }
     }
 
     private String getUserId(Map<String, Object> userDetails)
