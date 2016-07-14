@@ -1,5 +1,6 @@
 package Andreea.Bican.impl;
 
+import Andreea.Bican.ClientAppDetails;
 import Andreea.Bican.TokenService;
 import Andreea.Bican.User;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
@@ -54,8 +55,8 @@ public class TokenServiceImpl implements TokenService {
         JsonFactory jsonFactory = new JacksonFactory();
 
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(transport, jsonFactory,
-                "565779346670-4hqpp1qbqa45go8pue5ncgirsk4rnc1o.apps.googleusercontent.com",
-                "ulAV2AnP1vkezZ1ORN7D9pA6", scopes).build();
+                ClientAppDetails.getGoogleClientId(),
+                ClientAppDetails.getGoogleClientSecret(), scopes).build();
         GoogleAuthorizationCodeRequestUrl url = flow.newAuthorizationUrl();
         url.setRedirectUri("http://localhost:8181");
         url.setApprovalPrompt("force");
@@ -78,7 +79,7 @@ public class TokenServiceImpl implements TokenService {
         jsonFactory = new JacksonFactory();
 
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(transport, jsonFactory,
-                "565779346670-4hqpp1qbqa45go8pue5ncgirsk4rnc1o.apps.googleusercontent.com", "ulAV2AnP1vkezZ1ORN7D9pA6", scopes).build();
+                ClientAppDetails.getGoogleClientId(), ClientAppDetails.getGoogleClientSecret(), scopes).build();
         GoogleTokenResponse res = flow.newTokenRequest(code).setRedirectUri("http://localhost:8181").execute();
         System.out.println("Refresh access token:");
         System.out.println(res.getRefreshToken());
@@ -100,7 +101,7 @@ public class TokenServiceImpl implements TokenService {
         transport = new NetHttpTransport();
         jsonFactory = new JacksonFactory();
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(transport, jsonFactory,
-                "565779346670-4hqpp1qbqa45go8pue5ncgirsk4rnc1o.apps.googleusercontent.com", "ulAV2AnP1vkezZ1ORN7D9pA6", scopes).build();
+                ClientAppDetails.getGoogleClientId(), ClientAppDetails.getGoogleClientSecret(), scopes).build();
         GoogleTokenResponse res = flow.newTokenRequest(code).setRedirectUri("http://localhost:8181").execute();
         System.out.println("Refresh access token:");
         String refreshToken = res.getRefreshToken();
@@ -120,7 +121,7 @@ public class TokenServiceImpl implements TokenService {
         res.setRefreshToken(refreshToken);
 
         GoogleRefreshTokenRequest refreshTokenRequest = new GoogleRefreshTokenRequest(transport, jsonFactory, refreshToken,
-                "565779346670-4hqpp1qbqa45go8pue5ncgirsk4rnc1o.apps.googleusercontent.com", "ulAV2AnP1vkezZ1ORN7D9pA6");
+              ClientAppDetails.getGoogleClientId(), ClientAppDetails.getGoogleClientSecret());
         GoogleTokenResponse googleTokenResponse = refreshTokenRequest.execute();
         String accessToken = googleTokenResponse.getAccessToken();
         return accessToken;
