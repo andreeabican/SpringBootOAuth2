@@ -3,10 +3,8 @@ package Andreea.Bican.impl;
 import Andreea.Bican.ClientAppDetails;
 import Andreea.Bican.TokenService;
 import Andreea.Bican.User;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeRequestUrl;
-import com.google.api.client.googleapis.auth.oauth2.GoogleRefreshTokenRequest;
-import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
+import com.google.api.client.auth.oauth2.TokenResponseException;
+import com.google.api.client.googleapis.auth.oauth2.*;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -18,11 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -143,6 +140,40 @@ public class TokenServiceImpl implements TokenService {
         System.out.println("\nSending 'GET' request to URL : " + url);
         System.out.println("Response Code : " + responseCode);
         return responseMessage;
+    }
+
+    @Override
+    public String getAccessTokenByGoogleCredential() {
+        scopes = new ArrayList<String>();
+        jsonFactory = new JacksonFactory();
+        transport = new NetHttpTransport();
+
+        scopes.add("email");
+        scopes.add("profile");
+
+        try {
+            GoogleCredential credential = new GoogleCredential.Builder()
+                    .setTransport(transport)
+                    .setJsonFactory(jsonFactory)
+                    .setServiceAccountId("oauth2-service-account@oauth2-1314.iam.gserviceaccount.com")
+                    .setServiceAccountScopes(scopes)
+                    .setServiceAccountPrivateKeyFromP12File(new File("OAuth2-676657cd7475.p12"))
+                    .build();
+            credential.refreshToken();
+            String token = credential.getAccessToken();
+            getEmailFromGoogleAccessToken(token);
+            return  token;
+        }catch (TokenResponseException tokenResponseException){
+            return "The credentials are wrong";
+        }catch (FileNotFoundException fileNotFoundException){
+            return "The file is not found";
+        } catch (GeneralSecurityException e) {
+            return "General Security Exception";
+        } catch (IOException e) {
+            return "IO Exception";
+        } catch (ParseException e) {
+            return "Couldn't parse the information from token";
+        }
     }
 
     public boolean checkToken(String token) throws Exception {

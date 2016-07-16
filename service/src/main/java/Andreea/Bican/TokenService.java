@@ -19,6 +19,8 @@ public interface TokenService {
 
     String sendGet(String url) throws Exception;
 
+    String getAccessTokenByGoogleCredential();
+
     boolean checkToken(String URL) throws Exception;
 
     void storeEmailAndRefreshToken(String email, String refreshToken);
