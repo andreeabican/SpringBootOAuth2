@@ -2,6 +2,7 @@ package Andreea.Bican.impl.Oauth2.GoogleAuthentication;
 
 import Andreea.Bican.impl.ClientAppDetails;
 import Andreea.Bican.impl.IProviderFilter;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
@@ -60,7 +61,7 @@ public class GoogleFilter implements IProviderFilter {
         ResourceServerProperties resourceServerProperties = new ResourceServerProperties();
         resourceServerProperties.setUserInfoUri("https://www.googleapis.com/plus/v1/people/me");
         resourceServerProperties.setPreferTokenInfo(false);
-
+        GoogleCredential googleCredential;
         return resourceServerProperties;
     }
 
