@@ -155,9 +155,9 @@ public class TokenServiceImpl implements TokenService {
             GoogleCredential credential = new GoogleCredential.Builder()
                     .setTransport(transport)
                     .setJsonFactory(jsonFactory)
-                    .setServiceAccountId("oauth2-service-account@oauth2-1314.iam.gserviceaccount.com")
+                    .setServiceAccountId(ClientAppDetails.getServiceAccountId())
                     .setServiceAccountScopes(scopes)
-                    .setServiceAccountPrivateKeyFromP12File(new File("OAuth2-676657cd7475.p12"))
+                    .setServiceAccountPrivateKeyFromP12File(new File(ClientAppDetails.getP12FileName()))
                     .build();
             credential.refreshToken();
             String token = credential.getAccessToken();
