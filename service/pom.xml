@@ -27,6 +27,11 @@
                 </dependency>
         -->
         <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-plus</artifactId>
+            <version>v1-rev416-1.22.0</version>
+        </dependency>
+        <dependency>
             <groupId>Andreea.Bican</groupId>
             <artifactId>model</artifactId>
             <version>0.0.1-SNAPSHOT</version>
@@ -42,5 +47,9 @@
             <version>1.22.0</version>
         </dependency>
     </dependencies>
-
+    <scm>
+        <connection>scm:git:git@github.com:vdenotaris/spring-boot-security-saml-sample.git</connection>
+        <url>scm:git:git@github.com:vdenotaris/spring-boot-security-saml-sample.git</url>
+        <developerConnection>scm:git:git@github.com:vdenotaris/spring-boot-security-saml-sample.git</developerConnection>
+    </scm>
 </project>
