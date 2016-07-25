@@ -14,7 +14,7 @@ public class GetToken {
     @Autowired
     TokenService tokenService;
 
-    @RequestMapping("/getTokenAuto")
+    @RequestMapping("/loginGoogle")
     public String getTokenAuto() throws Exception {
         return tokenService.getAccessTokenByGoogleCredential();
     }
