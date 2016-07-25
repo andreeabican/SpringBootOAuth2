@@ -1,6 +1,6 @@
 package Andreea.Bican.impl.Oauth2.FacebookAuthentication;
 
-import Andreea.Bican.impl.ClientAppDetails;
+import Andreea.Bican.ClientAppDetails;
 import Andreea.Bican.impl.IProviderFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -32,18 +32,17 @@ public class FacebookFilter implements IProviderFilter {
     @Qualifier("listOfFilters")
     ArrayList<Filter> filters;
 
-    @Bean(name = "facebookFilter")
-    public int addFilter()
-    {
-        filters.add(createFilter());
-        return 1;
-    }
-
     public List<String> createScopesList()
     {
         List<String> scopes = new ArrayList<>();
         scopes.add("email");
         return scopes;
+    }
+
+    @Bean(name = "facebookFilter")
+    public int addFilter() {
+        filters.add(createFilter());
+        return 1;
     }
 
     public OAuth2ProtectedResourceDetails getClient() {
@@ -68,7 +67,6 @@ public class FacebookFilter implements IProviderFilter {
         return resourceServerProperties;
     }
 
-    //@Bean(name="facebookFilter")
     public OAuth2ClientAuthenticationProcessingFilter createFilter() {
 
         OAuth2ClientAuthenticationProcessingFilter facebookFilter = new OAuth2ClientAuthenticationProcessingFilter("/login/facebook");

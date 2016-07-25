@@ -1,6 +1,6 @@
 package Andreea.Bican.impl.Oauth2.GoogleAuthentication;
 
-import Andreea.Bican.impl.ClientAppDetails;
+import Andreea.Bican.ClientAppDetails;
 import Andreea.Bican.impl.IProviderFilter;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import org.springframework.beans.factory.annotation.Autowired;
