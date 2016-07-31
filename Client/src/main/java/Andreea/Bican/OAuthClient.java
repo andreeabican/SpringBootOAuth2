@@ -15,7 +15,7 @@ public class OAuthClient {
     private static final String targetURL = "http://localhost:8181/loginGoogle";
 
     public static void main(String[] args) throws IOException {
-        
+
         if (args.length > 2) {
             OAuthApplication.main(args);
         }
