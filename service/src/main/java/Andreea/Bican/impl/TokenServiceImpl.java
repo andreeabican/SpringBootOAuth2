@@ -158,7 +158,9 @@ public class TokenServiceImpl implements TokenService {
                     .setServiceAccountId(ClientAppDetails.getServiceAccountId())
                     .setServiceAccountScopes(scopes)
                     .setServiceAccountPrivateKeyFromP12File(new File(ClientAppDetails.getP12FileName()))
+                    .setServiceAccountUser(ClientAppDetails.getServiceAccountUser())
                     .build();
+
             credential.refreshToken();
             String token = credential.getAccessToken();
             getEmailFromGoogleAccessToken(token);
