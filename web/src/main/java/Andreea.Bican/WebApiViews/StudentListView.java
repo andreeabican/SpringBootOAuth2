@@ -48,11 +48,9 @@ public class StudentListView {
            if (checkAccessToken(token)) {
                User user = currentContextService.getCurrentUser(token);
                userAuthorities = user.getAuthorities();
-               outputString = "student lists which have class id " + Integer.toString(classId) + ":";
+               outputString = "student lists which have class id " + Integer.toString(classId) + ":\n";
                for (StudentList studentList : studentLists) {
                    if (studentListService.hasUserAuthorities(userAuthorities, studentList)) {
-                       outputString += "User has the authority to see student list "
-                               + Integer.toString(studentList.getClassId()) + "\n";
                        outputString += getNames(studentListMembershipService.getStudentListMemberships(classId));
                    } else {
                        outputString += "You don't have authorities to see "
@@ -71,8 +69,10 @@ public class StudentListView {
         String names = "";
         for( StudentListMembership name : listOfStudentsEnroledInClass){
             System.out.println(studentService.getStudent(name.getStudentId()).getName());
-            names += studentService.getStudent(name.getStudentId()).getName()
-                    + " ";
+            names += studentService.getStudent(name.getStudentId()).getName() + "\n";
+        }
+        if (names.equals("")){
+            return "No student";
         }
         return names;
     }
