@@ -18,6 +18,7 @@
         <module>web</module>
         <module>security</module>
         <module>service</module>
+        <module>Client</module>
     </modules>
 
     <parent>
