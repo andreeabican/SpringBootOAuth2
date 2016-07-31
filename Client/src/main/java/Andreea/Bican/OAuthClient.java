@@ -15,7 +15,7 @@ public class OAuthClient {
     private static final String targetURL = "http://localhost:8181/loginGoogle";
 
     public static void main(String[] args) throws IOException {
-
+        
         if (args.length > 2) {
             OAuthApplication.main(args);
         }
@@ -25,7 +25,6 @@ public class OAuthClient {
 
             HttpURLConnection httpConnection = (HttpURLConnection) restServiceURL.openConnection();
             httpConnection.setRequestMethod("GET");
-            httpConnection.setRequestProperty("Accept", "application/json");
 
             if (httpConnection.getResponseCode() != 200) {
                 throw new RuntimeException("HTTP GET Request Failed with Error code : "
