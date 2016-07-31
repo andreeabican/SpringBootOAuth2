@@ -16,6 +16,6 @@ public class GetToken {
 
     @RequestMapping("/loginGoogle")
     public String getTokenAuto() throws Exception {
-        return output = "Here is your access token :" + tokenService.getAccessTokenByGoogleCredential();
+        return "Here is your access token :" + tokenService.getAccessTokenByGoogleCredential();
     }
 }
