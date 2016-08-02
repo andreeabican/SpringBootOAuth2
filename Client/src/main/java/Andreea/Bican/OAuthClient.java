@@ -35,7 +35,7 @@ public class OAuthClient {
                     (httpConnection.getInputStream())));
 
             String output;
-            System.out.println("Output from Server:  \n");
+            System.out.println("Output from Server:  ");
 
             while ((output = responseBuffer.readLine()) != null) {
                 System.out.println(output);
