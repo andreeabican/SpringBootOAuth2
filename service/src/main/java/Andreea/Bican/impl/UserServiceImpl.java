@@ -12,7 +12,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public User getUser(String userId) {
-        return userRepository.getUser(userId);
+    public User getUser(String email) {
+        return userRepository.getUser(email);
     }
 }
