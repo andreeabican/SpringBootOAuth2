@@ -26,4 +26,5 @@ public interface TokenService {
     void storeEmailAndRefreshToken(String email, String refreshToken);
 
     String getEmailFromGoogleAccessToken(String token) throws IOException, ParseException;
+
 }

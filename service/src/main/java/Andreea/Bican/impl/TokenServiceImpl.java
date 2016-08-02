@@ -3,6 +3,7 @@ package Andreea.Bican.impl;
 import Andreea.Bican.ClientAppDetails;
 import Andreea.Bican.TokenService;
 import Andreea.Bican.User;
+import Andreea.Bican.UserService;
 import com.google.api.client.auth.oauth2.TokenResponseException;
 import com.google.api.client.googleapis.auth.oauth2.*;
 import com.google.api.client.http.HttpTransport;
@@ -14,6 +15,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -41,6 +45,8 @@ public class TokenServiceImpl implements TokenService {
     @Qualifier("listOfUsers")
     HashMap<String, User> loggedUsersList;
 
+    @Autowired
+    UserService userService;
 
     @Override
     public String getGoogleAuthorizationCode() throws Exception {
@@ -107,6 +113,7 @@ public class TokenServiceImpl implements TokenService {
         return refreshToken;
     }
 
+
     @Override
     public String getGoogleAccessTokenByRefreshToken(String refreshToken) throws IOException {
         scopes = new ArrayList<String>();
@@ -163,7 +170,13 @@ public class TokenServiceImpl implements TokenService {
 
             credential.refreshToken();
             String token = credential.getAccessToken();
-            getEmailFromGoogleAccessToken(token);
+            String email = getEmailFromGoogleAccessToken(token);
+            User user = userService.getUser(email);
+            AuthenticateUser authUser = new AuthenticateUser(user);
+            System.out.println("Information provided " + user.getEmail() + " username " + user.getName() + " id " + user.getId());
+            Authentication auth = new UsernamePasswordAuthenticationToken(authUser, null, authUser.getAuthorities());
+
+            SecurityContextHolder.getContext().setAuthentication(auth);
             return  token;
         }catch (TokenResponseException tokenResponseException){
             return "The credentials are wrong";
@@ -228,6 +241,8 @@ public class TokenServiceImpl implements TokenService {
         Object object = parser.parse(String.valueOf(sb));
         JSONObject jsonObject = (JSONObject) object;
         String email = (String)jsonObject.get("email");
-        return (String) jsonObject.get("email");
+
+        return email;
     }
+
 }
