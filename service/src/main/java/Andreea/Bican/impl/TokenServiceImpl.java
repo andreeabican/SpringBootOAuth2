@@ -18,7 +18,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -47,6 +49,9 @@ public class TokenServiceImpl implements TokenService {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserDetailsServiceImpl userDetailsService;
 
     @Override
     public String getGoogleAuthorizationCode() throws Exception {
@@ -171,12 +176,7 @@ public class TokenServiceImpl implements TokenService {
             credential.refreshToken();
             String token = credential.getAccessToken();
             String email = getEmailFromGoogleAccessToken(token);
-            User user = userService.getUser(email);
-            AuthenticateUser authUser = new AuthenticateUser(user);
-            System.out.println("Information provided " + user.getEmail() + " username " + user.getName() + " id " + user.getId());
-            Authentication auth = new UsernamePasswordAuthenticationToken(authUser, null, authUser.getAuthorities());
 
-            SecurityContextHolder.getContext().setAuthentication(auth);
             return  token;
         }catch (TokenResponseException tokenResponseException){
             return "The credentials are wrong";
