@@ -52,23 +52,29 @@
 						}).controller("home", function($http, $location) {
 					    var self = this;
 					$http.get("/user").success(function(data) {
-						if (data.name) {
+						if (data) {
+                                console.log("Intra in name")
 						    if( data.userAuthentication.details!= null)
 						    {
+                                    console.log("Intra in details")
 							    self.user = data.userAuthentication.details.userName;
 							    self.email = data.userAuthentication.details.userEmail;
 								self.id = data.userAuthentication.details.userId;
 								self.token = data.userAuthentication.details.token;
 								self.jsessionid = data.userAuthentication.details.JSessionId;
 							    self.authenticated = true;
-							}
-							else
+							}else
 							{
-							     self.user = data.userAuthentication.details.name;
-							     self.email = "Not found";
+							    self.user = data.principal.username;
+							    self.email = data.principal.email;
+							    seld.id = "none";
+							    self.jsessionid = "none";
+							    self.token = "none";
 							    self.authenticated = true;
-							}
+							 }
+
 						}else{
+                                console.log("Intra in al doilea else")
 							self.user = "N/A";
 							self.authenticated = false;
 						}
