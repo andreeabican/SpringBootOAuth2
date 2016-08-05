@@ -26,16 +26,16 @@ public class CustomFilter extends GenericFilterBean {
         HttpServletResponse response = (HttpServletResponse) res;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        System.out.println("This is the context path ");
+     //   System.out.println("This is the context path ");
 
         Enumeration<String> enumeration = request.getHeaderNames();
         String requestURI = request.getRequestURI();
-        System.out.println("Request uri is " + requestURI);
-
+      //  System.out.println("Request uri is " + requestURI);
+/*
         while(enumeration.hasMoreElements())
         {
             System.out.println(enumeration.nextElement());
-        }
+        }*/
         chain.doFilter(req, res);
     }
 }
