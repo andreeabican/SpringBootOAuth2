@@ -23,12 +23,9 @@ public class UserRepositoryHardcoded implements UserRepository {
     public User getUser(String userEmail) {
         HashMap<String,UserRepositoryHardcodedPropertyUser> users = userRepostioryHarcodedProperties.getUsers();
         if (users == null) {
-            System.out.println("There are no users");
             return null; // no user properties were set in .yml
         }
-        System.out.println("Looking for " + userEmail);
         for (String userKey : users.keySet()) {
-            System.out.println("Found users " + users.get(userKey).getEmail());
             if (users.get(userKey).getEmail().equals(userEmail)) {
                 User foundUser = new User();
                 foundUser.setEmail(users.get(userKey).getEmail());
