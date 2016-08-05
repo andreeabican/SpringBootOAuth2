@@ -1,9 +1,6 @@
 package Andreea.Bican.impl;
 
-import Andreea.Bican.ClientAppDetails;
-import Andreea.Bican.TokenService;
-import Andreea.Bican.User;
-import Andreea.Bican.UserService;
+import Andreea.Bican.*;
 import com.google.api.client.auth.oauth2.TokenResponseException;
 import com.google.api.client.googleapis.auth.oauth2.*;
 import com.google.api.client.http.HttpTransport;
@@ -177,6 +174,13 @@ public class TokenServiceImpl implements TokenService {
             String token = credential.getAccessToken();
             String email = getEmailFromGoogleAccessToken(token);
 
+            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+            User user = userService.getUser(email);
+            AuthenticatedUser authUser = new AuthenticatedUser(user);
+            System.out.println("Information provided " + user.getEmail() + " username " + user.getName() + " id " + user.getId());
+            Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, null, authUser.getAuthorities());
+
+            SecurityContextHolder.getContext().setAuthentication(auth);
             return  token;
         }catch (TokenResponseException tokenResponseException){
             return "The credentials are wrong";
