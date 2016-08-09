@@ -61,7 +61,6 @@ public class GoogleFilter implements IProviderFilter {
         ResourceServerProperties resourceServerProperties = new ResourceServerProperties();
         resourceServerProperties.setUserInfoUri("https://www.googleapis.com/plus/v1/people/me");
         resourceServerProperties.setPreferTokenInfo(false);
-        GoogleCredential googleCredential;
         return resourceServerProperties;
     }
 
