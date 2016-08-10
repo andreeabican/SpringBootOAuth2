@@ -23,7 +23,7 @@ public interface TokenService {
 
     boolean checkToken(String URL) throws Exception;
 
-    void storeEmailAndRefreshToken(String email, String refreshToken);
+    String getUsernameFromRepository(String email);
 
     String getEmailFromGoogleAccessToken(String token) throws IOException, ParseException;
 

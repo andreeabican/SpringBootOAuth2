@@ -17,7 +17,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -146,7 +145,6 @@ public class TokenServiceImpl implements TokenService {
 
         int responseCode = con.getResponseCode();
         String responseMessage = con.getResponseMessage();
-        System.out.println("\nSending 'GET' request to URL : " + url);
         System.out.println("Response Code : " + responseCode);
         return responseMessage;
     }
@@ -177,7 +175,6 @@ public class TokenServiceImpl implements TokenService {
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
             User user = userService.getUser(email);
             AuthenticatedUser authUser = new AuthenticatedUser(user);
-            System.out.println("Information provided " + user.getEmail() + " username " + user.getName() + " id " + user.getId());
             Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, null, authUser.getAuthorities());
 
             SecurityContextHolder.getContext().setAuthentication(auth);
@@ -195,28 +192,29 @@ public class TokenServiceImpl implements TokenService {
         }
     }
 
+    @Override
+    public String getUsernameFromRepository(String email){
+        User user = userService.getUser(email);
+        return user.getName();
+    }
+
     public boolean checkToken(String token) throws Exception {
         User user = loggedUsersList.get(token);
         String URL = null;
-        if(user.getProvider() != null) {
+        if (user.getProvider() != null) {
             if (user.getProvider().equals("Facebook")) {
                 URL = "graph.facebook.com/debug_token?input_token=" + token;
             } else if (user.getProvider().equals("Google")) {
                 URL = "https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=" + token;
             }
-        }else{
+        } else {
             return false;
         }
         String responseMessage = sendGet(URL);
-        if(responseMessage.equals("OK")) {
+        if (responseMessage.equals("OK")) {
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void storeEmailAndRefreshToken(String email, String refreshToken) {
-
     }
 
     @Override
