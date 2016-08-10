@@ -1,7 +1,6 @@
 package Andreea.Bican.WebApiViews;
 
 import Andreea.Bican.*;
-import Andreea.Bican.impl.CurrentContextServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,11 +20,10 @@ public class StudentListView {
     private StudentListService studentListService;
 
     @Autowired
-    CurrentContextServiceImpl currentContextService;
+    private UserService userService;
 
     @Autowired
     StudentListMembershipService studentListMembershipService;
-
 
     @Autowired
     StudentService studentService;
@@ -46,7 +44,8 @@ public class StudentListView {
            }
            Set<String> userAuthorities = null;
            if (checkAccessToken(token)) {
-               User user = currentContextService.getCurrentUser(token);
+               String email = tokenService.getEmailFromGoogleAccessToken(token);
+               User user = userService.getUser(email);
                userAuthorities = user.getAuthorities();
                outputString = "student lists which have class id " + Integer.toString(classId) + ":\n";
                for (StudentList studentList : studentLists) {
