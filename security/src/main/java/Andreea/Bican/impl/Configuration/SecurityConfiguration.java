@@ -47,7 +47,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatcher("/**").authorizeRequests()
                 .antMatchers("/", "/login**", "/webjars/**").permitAll()
                 .antMatchers("/userAndSession/**").authenticated()
-                .antMatchers("/class").authenticated()
                 .and()
                     .logout()
                     .logoutSuccessUrl("/")
