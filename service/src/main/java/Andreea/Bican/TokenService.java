@@ -27,4 +27,6 @@ public interface TokenService {
 
     String getEmailFromGoogleAccessToken(String token) throws IOException, ParseException;
 
+    String getUsernameFromRepository(String email);
+
 }
