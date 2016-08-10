@@ -4,19 +4,19 @@ package Andreea.Bican;
  * Created by andre on 22.07.2016.
  */
 public class ClientAppDetails {
-    private static String googleClientId = "565779346670-4hqpp1qbqa45go8pue5ncgirsk4rnc1o.apps.googleusercontent.com";
+    private static String googleClientId = "";
 
-    private static String facebookClientId = "1726962864239113";
+    private static String facebookClientId = "";
 
-    private static String facebookClientSecret = "43fdfab2ebdee4978bf7090a02817414";
+    private static String facebookClientSecret = "";
 
-    private static String googleClientSecret = "ulAV2AnP1vkezZ1ORN7D9pA6";
+    private static String googleClientSecret = "";
 
-    private static String serviceAccountId = "andreea@oauth2-1314.iam.gserviceaccount.com";
+    private static String serviceAccountId = "";
 
-    private static String p12FileName = "OAuth2-89e8a661d295.p12";
+    private static String p12FileName = "";
 
-    private static String serviceAccountUser = "andreeasanzianabican@gmail.com";
+    private static String serviceAccountUser = "";
 
     public static void setServiceAccountId(String serviceAccountId){ ClientAppDetails.serviceAccountId = serviceAccountId; }
 
