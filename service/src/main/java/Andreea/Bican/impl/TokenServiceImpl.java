@@ -145,7 +145,6 @@ public class TokenServiceImpl implements TokenService {
 
         int responseCode = con.getResponseCode();
         String responseMessage = con.getResponseMessage();
-        System.out.println("\nSending 'GET' request to URL : " + url);
         System.out.println("Response Code : " + responseCode);
         return responseMessage;
     }
@@ -176,7 +175,6 @@ public class TokenServiceImpl implements TokenService {
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
             User user = userService.getUser(email);
             AuthenticatedUser authUser = new AuthenticatedUser(user);
-            System.out.println("Information provided " + user.getEmail() + " username " + user.getName() + " id " + user.getId());
             Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, null, authUser.getAuthorities());
 
             SecurityContextHolder.getContext().setAuthentication(auth);
