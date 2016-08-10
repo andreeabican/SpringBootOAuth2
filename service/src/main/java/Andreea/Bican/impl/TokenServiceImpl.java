@@ -194,6 +194,7 @@ public class TokenServiceImpl implements TokenService {
         }
     }
 
+    @Override
     public String getUsernameFromRepository(String email){
         User user = userService.getUser(email);
         return user.getName();
@@ -202,25 +203,20 @@ public class TokenServiceImpl implements TokenService {
     public boolean checkToken(String token) throws Exception {
         User user = loggedUsersList.get(token);
         String URL = null;
-        if(user.getProvider() != null) {
+        if (user.getProvider() != null) {
             if (user.getProvider().equals("Facebook")) {
                 URL = "graph.facebook.com/debug_token?input_token=" + token;
             } else if (user.getProvider().equals("Google")) {
                 URL = "https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=" + token;
             }
-        }else{
+        } else {
             return false;
         }
         String responseMessage = sendGet(URL);
-        if(responseMessage.equals("OK")) {
+        if (responseMessage.equals("OK")) {
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void storeEmailAndRefreshToken(String email, String refreshToken) {
-
     }
 
     @Override
