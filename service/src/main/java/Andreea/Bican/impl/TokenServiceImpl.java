@@ -17,7 +17,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -215,9 +214,11 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public void storeEmailAndRefreshToken(String email, String refreshToken) {
-
+    public String getUsernameFromRepository(String email){
+        User user = userService.getUser(email);
+        return user.getName();
     }
+
 
     @Override
     public String getEmailFromGoogleAccessToken(String token) throws IOException, ParseException {
