@@ -21,8 +21,11 @@ public class RefreshTokenView {
         String refreshToken = tokenService.getGoogleRefreshToken(code);
         String token = tokenService.getGoogleAccessTokenByRefreshToken(refreshToken);
         String email = tokenService.getEmailFromGoogleAccessToken(token);
-        System.out.println("Token is " + token + " email is: " + email);
 
-        return  refreshToken;
+        String output = "Refresh token: " + refreshToken +
+                "\n Access token " + token +
+                "\n Email " + email;
+
+        return  output;
     }
 }
