@@ -46,6 +46,11 @@
             <artifactId>google-api-client</artifactId>
             <version>1.22.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>8.0.33</version>
+        </dependency>
     </dependencies>
     <scm>
         <connection>scm:git:git@github.com:vdenotaris/spring-boot-security-saml-sample.git</connection>
