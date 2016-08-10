@@ -199,7 +199,7 @@ public class TokenServiceImpl implements TokenService {
     }
 
     public boolean checkToken(String token) throws Exception {
-        User user = loggedUsersList.get(token);
+       /* User user = loggedUsersList.get(token);
         String URL = null;
         if (user.getProvider() != null) {
             if (user.getProvider().equals("Facebook")) {
@@ -209,7 +209,8 @@ public class TokenServiceImpl implements TokenService {
             }
         } else {
             return false;
-        }
+        }*/
+        String URL = "https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=" + token;
         String responseMessage = sendGet(URL);
         if (responseMessage.equals("OK")) {
             return true;
