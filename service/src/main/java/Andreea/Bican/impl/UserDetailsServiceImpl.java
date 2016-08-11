@@ -10,10 +10,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
+<<<<<<< HEAD
  * Created by andre on 10.08.2016.
  */
 @Service
-public class UserDetailsServiceImpl implements UserDetailsService{
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
     UserService userService;
@@ -23,6 +24,10 @@ public class UserDetailsServiceImpl implements UserDetailsService{
         User user = userService.getUser(email);
         UserDetails userDetails = new AuthenticatedUser(user);
 
-        return userDetails;
+        if(user != null){
+            return userDetails;
+        }else{
+            return null;
+        }
     }
 }
