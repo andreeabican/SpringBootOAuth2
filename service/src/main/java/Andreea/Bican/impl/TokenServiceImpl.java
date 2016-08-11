@@ -11,7 +11,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,7 +22,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -40,10 +38,6 @@ public class TokenServiceImpl implements TokenService {
     private final String url = "https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=";
 
     @Autowired
-    @Qualifier("listOfUsers")
-    HashMap<String, User> loggedUsersList;
-
-    @Autowired
     UserService userService;
 
     @Autowired
@@ -51,7 +45,6 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public String getGoogleAuthorizationCode() throws Exception {
-        System.out.println("\nSending 'GET' request to URL : ");
         List<String> scopes = new ArrayList<String>();
         scopes.add("email");
 
@@ -85,14 +78,8 @@ public class TokenServiceImpl implements TokenService {
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(transport, jsonFactory,
                 ClientAppDetails.getGoogleClientId(), ClientAppDetails.getGoogleClientSecret(), scopes).build();
         GoogleTokenResponse res = flow.newTokenRequest(code).setRedirectUri("http://localhost:8181").execute();
-        System.out.println("Refresh access token:");
-        System.out.println(res.getRefreshToken());
-
+        res.getRefreshToken();
         String accessToken = res.getAccessToken();
-        System.out.println("Token expires in " + res.getExpiresInSeconds());
-
-        System.out.println("access:");
-        System.out.println(accessToken);
 
         return accessToken;
     }
@@ -107,9 +94,7 @@ public class TokenServiceImpl implements TokenService {
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(transport, jsonFactory,
                 ClientAppDetails.getGoogleClientId(), ClientAppDetails.getGoogleClientSecret(), scopes).build();
         GoogleTokenResponse res = flow.newTokenRequest(code).setRedirectUri("http://localhost:8181").execute();
-        System.out.println("Refresh access token:");
         String refreshToken = res.getRefreshToken();
-        System.out.println(refreshToken);
 
         return refreshToken;
     }
@@ -145,7 +130,6 @@ public class TokenServiceImpl implements TokenService {
 
         int responseCode = con.getResponseCode();
         String responseMessage = con.getResponseMessage();
-        System.out.println("Response Code : " + responseCode);
         return responseMessage;
     }
 
@@ -217,7 +201,6 @@ public class TokenServiceImpl implements TokenService {
         // optional default is GET
         con.setRequestMethod("GET");
 
-        //add request header
         con.setRequestProperty("User-Agent", USER_AGENT);
 
         con.connect();
