@@ -199,17 +199,8 @@ public class TokenServiceImpl implements TokenService {
     }
 
     public boolean checkToken(String token) throws Exception {
-        User user = loggedUsersList.get(token);
-        String URL = null;
-        if (user.getProvider() != null) {
-            if (user.getProvider().equals("Facebook")) {
-                URL = "graph.facebook.com/debug_token?input_token=" + token;
-            } else if (user.getProvider().equals("Google")) {
-                URL = "https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=" + token;
-            }
-        } else {
-            return false;
-        }
+
+        String URL = "https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=" + token;
         String responseMessage = sendGet(URL);
         if (responseMessage.equals("OK")) {
             return true;
@@ -237,7 +228,6 @@ public class TokenServiceImpl implements TokenService {
             sb.append(line+"\n");
         }
         br.close();
-        System.out.println(sb);
 
         JSONParser parser = new JSONParser();
         Object object = parser.parse(String.valueOf(sb));

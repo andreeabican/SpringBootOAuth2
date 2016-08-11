@@ -29,7 +29,7 @@ import java.util.HashMap;
 
 
 @Configuration
-@Import({FacebookFilter.class, GoogleFilter.class, ProvidersCompositeFilter.class, AutoFilter.class, CSRFHeaderFilter.class, CurrentUsersServiceImpl.class})
+@Import({FacebookFilter.class, GoogleFilter.class, ProvidersCompositeFilter.class, AutoFilter.class, CSRFHeaderFilter.class})
 @EnableOAuth2Client
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
