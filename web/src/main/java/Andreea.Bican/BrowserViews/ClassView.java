@@ -25,8 +25,8 @@ public class ClassView {
             return "null";
         }
         return "class_id: " + Integer.toString(exampleClass.getId()) +
-                "<br>name: " + exampleClass.getName() +
-                "<br>style: " + exampleClass.getStyle().getName() +
-                "<br>description: " + exampleClass.getDescription();
+                "\n name: " + exampleClass.getName() +
+                "\n style: " + exampleClass.getStyle().getName() +
+                "\n description: " + exampleClass.getDescription();
     }
 }
