@@ -31,7 +31,7 @@ public class ClassesView {
                     "class_id: " + Integer.toString(classs.getId()) +
                     "\n name: " + classs.getName() +
                     "\n style: " + classs.getStyle().getName() +
-                    "\n description: " + classs.getDescription();
+                    "\n description: " + classs.getDescription() +
                     "\n description: " + classs.getDescription();
         }
         return outputString;
