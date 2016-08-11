@@ -21,7 +21,6 @@ public class ClassesView {
 
     @RequestMapping("/classes")
     public String classes(Principal principal) {
-        //no user lookup needed -- eveybody can see class listings
         List<Class> classes = classService.getClasses();
         if (classes == null) {
             return "null";
@@ -30,10 +29,10 @@ public class ClassesView {
         for (Class classs : classes) {
             outputString = outputString +
                     "class_id: " + Integer.toString(classs.getId()) +
-                    "<br>name: " + classs.getName() +
-                    "<br>style: " + classs.getStyle().getName() +
-                    "<br>description: " + classs.getDescription() +
-                    "<br>&nbsp;<br>";
+                    "\n name: " + classs.getName() +
+                    "\n style: " + classs.getStyle().getName() +
+                    "\n description: " + classs.getDescription();
+                    "\n description: " + classs.getDescription();
         }
         return outputString;
     }
