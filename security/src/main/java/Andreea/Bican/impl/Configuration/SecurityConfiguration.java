@@ -1,7 +1,6 @@
 package Andreea.Bican.impl.Configuration;
 
 import Andreea.Bican.User;
-import Andreea.Bican.impl.CurrentUsersServiceImpl;
 import Andreea.Bican.impl.Oauth2.AutoFilter;
 import Andreea.Bican.impl.Oauth2.FacebookAuthentication.FacebookFilter;
 import Andreea.Bican.impl.Oauth2.Filters.CSRFHeaderFilter;
