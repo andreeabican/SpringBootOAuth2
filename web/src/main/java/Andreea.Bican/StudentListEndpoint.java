@@ -1,4 +1,4 @@
-package Andreea.Bican.WebApiViews;
+package Andreea.Bican;
 
 import Andreea.Bican.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import java.util.Set;
  */
 
 @RestController
-public class StudentListView {
+public class StudentListEndpoint {
 
     @Autowired
     private StudentListService studentListService;
@@ -67,7 +67,6 @@ public class StudentListView {
     public String getNames(List<StudentListMembership> listOfStudentsEnroledInClass){
         String names = "";
         for( StudentListMembership name : listOfStudentsEnroledInClass){
-            System.out.println(studentService.getStudent(name.getStudentId()).getName());
             names += studentService.getStudent(name.getStudentId()).getName() + "\n";
         }
         if (names.equals("")){

@@ -1,4 +1,4 @@
-package Andreea.Bican.BrowserViews;
+package Andreea.Bican;
 
 import Andreea.Bican.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Created by andre on 14.07.2016.
  */
 @RestController
-public class GetToken {
+public class GoogleAccessTokenEndpoint {
 
     @Autowired
     TokenService tokenService;

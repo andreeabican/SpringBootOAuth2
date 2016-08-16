@@ -1,4 +1,4 @@
-package Andreea.Bican.BrowserViews;
+package Andreea.Bican;
 
 import Andreea.Bican.Class;
 import Andreea.Bican.ClassService;
@@ -14,7 +14,7 @@ import java.util.List;
  */
 
 @RestController
-public class ClassesView {
+public class ClassesEndpoint {
 
     @Autowired
     private ClassService classService;

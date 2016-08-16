@@ -1,4 +1,4 @@
-package Andreea.Bican.WebApiViews;
+package Andreea.Bican;
 
 import Andreea.Bican.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Created by andre on 07.07.2016.
  */
 @RestController
-public class RefreshTokenView {
+public class RefreshTokenEndpoint {
 
     @Autowired
     TokenService tokenService;
@@ -22,8 +22,8 @@ public class RefreshTokenView {
         String token = tokenService.getGoogleAccessTokenByRefreshToken(refreshToken);
         String email = tokenService.getEmailFromGoogleAccessToken(token);
        String output = "Refresh token " + refreshToken +
-               "\n Token " + token +
-               "\n Email " + email;
+               "\n\n Token " + token +
+               "\n\n Email " + email;
         return  output;
     }
 }
