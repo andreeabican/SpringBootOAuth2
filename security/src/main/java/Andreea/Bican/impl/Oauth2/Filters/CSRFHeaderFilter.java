@@ -1,12 +1,8 @@
 package Andreea.Bican.impl.Oauth2.Filters;
 
 import Andreea.Bican.impl.IFilter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.web.csrf.CsrfToken;
-import org.springframework.web.filter.CompositeFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
 
@@ -17,7 +13,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * Created by andre on 22.06.2016.
@@ -33,6 +28,7 @@ public class CSRFHeaderFilter implements IFilter{
             protected void doFilterInternal(HttpServletRequest request,
                                             HttpServletResponse response, FilterChain filterChain)
                     throws ServletException, IOException {
+
                 CsrfToken csrf = (CsrfToken) request
                         .getAttribute(CsrfToken.class.getName());
                 if (csrf != null) {

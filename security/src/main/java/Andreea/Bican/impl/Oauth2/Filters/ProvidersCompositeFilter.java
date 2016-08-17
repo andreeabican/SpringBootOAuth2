@@ -19,7 +19,7 @@ public class ProvidersCompositeFilter {
     ArrayList<Filter> listOfFilters;
 
     @Bean(name="compositeFilter")
-    @DependsOn(value = {"facebookFilter", "googleFilter", "customFilter"})
+    @DependsOn(value = {"facebookFilter", "googleFilter"})
     public CompositeFilter createCompositeFilter()
     {
         CompositeFilter filter = new CompositeFilter();
