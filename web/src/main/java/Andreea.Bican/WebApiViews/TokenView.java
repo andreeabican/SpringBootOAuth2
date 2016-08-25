@@ -1,6 +1,5 @@
 package Andreea.Bican.WebApiViews;
 
-import Andreea.Bican.CurrentUsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,14 +17,10 @@ public class TokenView {
     private Andreea.Bican.TokenService tokenService;
 
 
-    @Autowired
-    CurrentUsersService currentUsersService;
-
     @RequestMapping("/getGoogleAccessToken")
     public String token(@RequestHeader(value = "code")String code) throws Exception {
         String token = tokenService.getGoogleAccessToken(code);
         String email = tokenService.getEmailFromGoogleAccessToken(token);
-        currentUsersService.logUserForWebApiSessions(token, email, "Google");
         return token;
     }
 }

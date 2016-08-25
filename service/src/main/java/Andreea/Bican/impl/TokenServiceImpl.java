@@ -11,7 +11,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,7 +22,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -38,10 +36,6 @@ public class TokenServiceImpl implements TokenService {
     private final String USER_AGENT = "Mozilla/5.0";
 
     private final String url = "https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=";
-
-    @Autowired
-    @Qualifier("listOfUsers")
-    HashMap<String, User> loggedUsersList;
 
     @Autowired
     UserService userService;
