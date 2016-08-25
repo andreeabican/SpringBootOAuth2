@@ -95,19 +95,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         http
                     .antMatcher("/**").authorizeRequests()
-                    .antMatchers("/", "/login**", "/webjars/**").permitAll()
+                    .antMatchers("/", "/login**", "/webjars/**", "/user", "/logged").permitAll()
                     .antMatchers("/admin/**").hasRole("ADMIN").anyRequest().authenticated()
                 .and()
                     .formLogin().loginPage(idpURL).defaultSuccessUrl(successURL)
                 .and()
                     .logout().logoutSuccessUrl("/").permitAll()
               .and()
-                    .csrf().csrfTokenRepository(csrfTokenRepository())
-               .and()
+        
                     .addFilterAfter(csrfHeaderFilter, SessionManagementFilter.class)
                     .authenticationProvider(samlAuthenticationProvider())
                     .addFilterBefore(compositeFilter, BasicAuthenticationFilter.class);
-
+            http.csrf().disable();
     }
 
     @Bean(name="listOfFilters")
