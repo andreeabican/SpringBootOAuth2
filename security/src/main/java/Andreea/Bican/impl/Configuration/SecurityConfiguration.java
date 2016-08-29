@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.MethodInvokingFactoryBean;
-import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -27,11 +26,11 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.saml.*;
 import org.springframework.security.saml.context.SAMLContextProviderImpl;
@@ -41,7 +40,6 @@ import org.springframework.security.saml.log.SAMLDefaultLogger;
 import org.springframework.security.saml.metadata.*;
 import org.springframework.security.saml.parser.ParserPoolHolder;
 import org.springframework.security.saml.processor.*;
-import org.springframework.security.saml.trust.httpclient.TLSProtocolConfigurer;
 import org.springframework.security.saml.trust.httpclient.TLSProtocolSocketFactory;
 import org.springframework.security.saml.util.VelocityFactory;
 import org.springframework.security.saml.websso.*;
@@ -56,9 +54,8 @@ import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuc
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
-import org.springframework.security.web.session.SessionManagementFilter;
+import org.springframework.security.web.session.ConcurrentSessionFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.filter.CompositeFilter;
 
 import javax.servlet.Filter;
 import java.io.File;
@@ -81,7 +78,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private String successURL = "http://localhost:8181";
 
-
+/*
    @Autowired
     @Qualifier("csrfHeaderFilter")
     Filter csrfHeaderFilter;
@@ -89,31 +86,36 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     @Qualifier("compositeFilter")
     CompositeFilter compositeFilter;
-
+*/
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
         http
-                    .antMatcher("/**").authorizeRequests()
-                    .antMatchers("/", "/login**", "/webjars/**", "/user", "/logged").permitAll()
-                    .antMatchers("/admin/**").hasRole("ADMIN").anyRequest().authenticated()
+                .antMatcher("/**").authorizeRequests()
+                .antMatchers("/", "/login**", "/webjars/**", "/saml**").permitAll()
                 .and()
-                    .formLogin().loginPage(idpURL).defaultSuccessUrl(successURL)
+                    .logout()
+                    .logoutSuccessUrl("/")
+                    .permitAll()
                 .and()
-                    .logout().logoutSuccessUrl("/").permitAll()
-              .and()
-        
-                    .addFilterAfter(csrfHeaderFilter, SessionManagementFilter.class)
-                    .authenticationProvider(samlAuthenticationProvider())
-                    .addFilterBefore(compositeFilter, BasicAuthenticationFilter.class);
-            http.csrf().disable();
+                    .addFilterBefore(metadataGeneratorFilter(), ConcurrentSessionFilter.class)
+                    .addFilterAfter(samlFilter(), BasicAuthenticationFilter.class);
+                    //.userDetailsService((UserDetailsService) detailsService);
+            //        .authenticationProvider(samlAuthenticationProvider())
+
+         http.csrf().disable();
+    }
+
+    @Override
+    protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(samlAuthenticationProvider());
     }
 
     @Bean(name="listOfFilters")
     public ArrayList<Filter> createListOfFilters(){
         return new ArrayList<Filter>();
     }
-
+/*
     @Bean
     public FilterRegistrationBean oauth2ClientFilterRegistration(
             OAuth2ClientContextFilter filter) {
@@ -121,7 +123,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         registration.setFilter(filter);
         registration.setOrder(-100);
         return registration;
-    }
+    }*/
     /*
     * Spring uses HttpSessionCsrfTokenRepository which by default
     * gives header name for CSRF as X-XSRF-TOKEN, but in order to use
@@ -139,7 +141,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     // XML parser pool needed for OpenSAML parsing
     @Bean(initMethod = "initialize")
     public StaticBasicParserPool parserPool() {
-        return new StaticBasicParserPool();
+            return new StaticBasicParserPool();
     }
 
     @Bean(name = "parserPoolHolder")
@@ -176,7 +178,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public SAMLAuthenticationProvider samlAuthenticationProvider() {
         SAMLAuthenticationProvider samlAuthenticationProvider = new SAMLAuthenticationProvider();
         samlAuthenticationProvider.setUserDetails(detailsService);
-        samlAuthenticationProvider.setForcePrincipalAsString(false);
+        samlAuthenticationProvider.setForcePrincipalAsString(true);
         return samlAuthenticationProvider;
     }
 
@@ -234,7 +236,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public SingleLogoutProfile logoutprofile() {
         return new SingleLogoutProfileImpl();
     }
-
+/*
     // Setup TLS Socket Factory
     @Bean
     public TLSProtocolConfigurer tlsProtocolConfigurer() {
@@ -242,7 +244,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         configurer.setSslHostnameVerification("allowAll");
         return configurer;
     }
-
+*/
     // Central storage of cryptographic keys
     @Bean
     public KeyManager keyManager() {
@@ -255,13 +257,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         String defaultKey = "apollo";
         return new JKSKeyManager(storeFile, storePass, passwords, defaultKey);
     }
-
     @Bean
     public ProtocolSocketFactory socketFactory() {
         final TLSProtocolSocketFactory factory =  new TLSProtocolSocketFactory(keyManager(), null, "allowAll");
         return factory;
     }
-
 
     @Bean
     public Protocol socketFactoryProtocol() {
@@ -274,7 +274,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         MethodInvokingFactoryBean methodInvokingFactoryBean = new MethodInvokingFactoryBean();
         methodInvokingFactoryBean.setTargetClass(Protocol.class);
         methodInvokingFactoryBean.setTargetMethod("registerProtocol");
-        Object[] args = {"https", socketFactoryProtocol()};
+       Object[] args = {"https", socketFactoryProtocol()};
         methodInvokingFactoryBean.setArguments(args);
         return methodInvokingFactoryBean;
     }
@@ -294,7 +294,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public ExtendedMetadata extendedMetadata() {
         ExtendedMetadata extendedMetadata = new ExtendedMetadata();
-        extendedMetadata.setIdpDiscoveryEnabled(true);
+        extendedMetadata.setIdpDiscoveryEnabled(false);
         extendedMetadata.setSignMetadata(true);
         return extendedMetadata;
     }
@@ -311,9 +311,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Qualifier("idp-ssocircle")
     public ExtendedMetadataDelegate ssoCircleExtendedMetadataProvider()
             throws MetadataProviderException, IOException {
-
-        final FilesystemMetadataProvider httpMetadataProvider
-                = new FilesystemMetadataProvider(metadataFile());
+      final FilesystemMetadataProvider httpMetadataProvider
+            = new FilesystemMetadataProvider(metadataFile());
         httpMetadataProvider.setParserPool(parserPool());
         ExtendedMetadataDelegate extendedMetadataDelegate =
                 new ExtendedMetadataDelegate(httpMetadataProvider, extendedMetadata());
@@ -337,7 +336,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public MetadataGenerator metadataGenerator() {
         MetadataGenerator metadataGenerator = new MetadataGenerator();
+        metadataGenerator.setBindingsSLO(Arrays.asList("Redirect", "POST"));
         metadataGenerator.setEntityId(entityId);
+        metadataGenerator.setRequestSigned(false);
+        metadataGenerator.setEntityBaseURL("http://localhost:8181");
         metadataGenerator.setExtendedMetadata(extendedMetadata());
         metadataGenerator.setIncludeDiscoveryExtension(false);
         metadataGenerator.setKeyManager(keyManager());
@@ -349,16 +351,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public MetadataDisplayFilter metadataDisplayFilter() throws MetadataProviderException, IOException {
         final MetadataDisplayFilter filter = new MetadataDisplayFilter();
-       // filter.setManager(metadata());
+     //   filter.setManager(metadata());
         return filter;
     }
 
     // Handler deciding where to redirect user after successful login
     @Bean
     public SavedRequestAwareAuthenticationSuccessHandler successRedirectHandler() {
-        SavedRequestAwareAuthenticationSuccessHandler successRedirectHandler =
-                new SavedRequestAwareAuthenticationSuccessHandler();
-        successRedirectHandler.setDefaultTargetUrl("/admin");
+        SAMLRelayStateSuccessHandler successRedirectHandler =
+                new SAMLRelayStateSuccessHandler();
+        successRedirectHandler.setDefaultTargetUrl("/");
         return successRedirectHandler;
     }
 
@@ -368,7 +370,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         SimpleUrlAuthenticationFailureHandler failureHandler =
                 new SimpleUrlAuthenticationFailureHandler();
         failureHandler.setUseForward(true);
-        failureHandler.setDefaultFailureUrl("/error");
+        failureHandler.setDefaultFailureUrl("/error.jsp");
         return failureHandler;
     }
 
@@ -409,8 +411,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public SecurityContextLogoutHandler logoutHandler() {
         SecurityContextLogoutHandler logoutHandler =
                 new SecurityContextLogoutHandler();
-        logoutHandler.setInvalidateHttpSession(false);
-      //  logoutHandler.setClearAuthentication(true);
+        logoutHandler.setInvalidateHttpSession(true);
+        logoutHandler.setClearAuthentication(true);
         return logoutHandler;
     }
 
