@@ -28,6 +28,7 @@ public class SAMLUserDetailsServiceImpl implements SAMLUserDetailsService {
         // The method is supposed to identify local account of user referenced by
         // data in the SAML assertion and return UserDetails object describing the user.
         final String userID = credential.getNameID().getValue();
+        System.out.println("Intra aici");
 
         LOG.info(String.format("%s is logged in", userID));
         final List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
