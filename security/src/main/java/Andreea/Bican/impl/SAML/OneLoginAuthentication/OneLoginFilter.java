@@ -21,6 +21,8 @@ import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.saml.*;
 import org.springframework.security.saml.context.SAMLContextProviderImpl;
 import org.springframework.security.saml.key.JKSKeyManager;
@@ -43,6 +45,7 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import javax.servlet.Filter;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -51,12 +54,20 @@ import java.util.*;
  * Created by andre on 11.09.2016.
  */
 @Configuration
-public class OneLoginFilter {
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true)
+public class OneLoginFilter{
+
+    @Autowired
+    @Qualifier("listOfFiltersBefore")
+    ArrayList<Filter> filtersBefore;
+
+    @Autowired
+    @Qualifier("listOfFiltersAfter")
+    ArrayList<Filter> filtersAfter;
 
     @Value("onelogin_metadata_568770.xml")
     private String metadataFile;
-
-    private String idpURL = "https://app.onelogin.com/login";
 
     private String entityId = "http://localhost:8181/saml/metadata";
 
@@ -96,7 +107,7 @@ public class OneLoginFilter {
 
     // SAML Authentication Provider responsible for validating of received SAML
     // messages
-    @Bean()//name="samlAuthenticationProvider")
+    @Bean()
     public SAMLAuthenticationProvider samlAuthenticationProvider() {
         SAMLAuthenticationProvider samlAuthenticationProvider = new SAMLAuthenticationProvider();
         samlAuthenticationProvider.setUserDetails(detailsService);
@@ -199,11 +210,10 @@ public class OneLoginFilter {
 
     // Setup advanced info about metadata
     @Bean
-    // @DependsOn(value = {"parserPool"})
     public ExtendedMetadata extendedMetadata() {
         ExtendedMetadata extendedMetadata = new ExtendedMetadata();
-        extendedMetadata.setIdpDiscoveryEnabled(false);
-        extendedMetadata.setSignMetadata(true);
+        extendedMetadata.setIdpDiscoveryEnabled(true);
+        extendedMetadata.setSignMetadata(false);
         return extendedMetadata;
     }
 
@@ -211,7 +221,6 @@ public class OneLoginFilter {
     @Bean
     public SAMLDiscovery samlIDPDiscovery() {
         SAMLDiscovery idpDiscovery = new SAMLDiscovery();
-        idpDiscovery.setIdpSelectionPath("/saml/idpSelection");
         return idpDiscovery;
     }
 
@@ -240,8 +249,7 @@ public class OneLoginFilter {
         httpMetadataProvider.setParserPool(parserPool());
         ExtendedMetadataDelegate extendedMetadataDelegate =
                 new ExtendedMetadataDelegate(httpMetadataProvider, extendedMetadata());
-        extendedMetadataDelegate.setMetadataTrustCheck(true);
-        extendedMetadataDelegate.setMetadataRequireSignature(false);
+        extendedMetadataDelegate.setMetadataTrustCheck(false);
         return extendedMetadataDelegate;
     }
 
@@ -262,7 +270,6 @@ public class OneLoginFilter {
     // Do no forget to call iniitalize method on providers
     @Bean
     @Qualifier("metadata")
-    //@DependsOn(value={"parserPool"})
     public CachingMetadataManager metadata() throws MetadataProviderException, IOException {
         List<MetadataProvider> providers = new ArrayList<MetadataProvider>();
         providers.add(ssoCircleExtendedMetadataProvider());
@@ -275,7 +282,7 @@ public class OneLoginFilter {
         MetadataGenerator metadataGenerator = new MetadataGenerator();
         metadataGenerator.setEntityId(entityId);
         metadataGenerator.setExtendedMetadata(extendedMetadata());
-        metadataGenerator.setIncludeDiscoveryExtension(false);
+        metadataGenerator.setIncludeDiscoveryExtension(true);
         metadataGenerator.setKeyManager(keyManager());
         return metadataGenerator;
     }
@@ -293,6 +300,7 @@ public class OneLoginFilter {
         SavedRequestAwareAuthenticationSuccessHandler successRedirectHandler =
                 new SavedRequestAwareAuthenticationSuccessHandler();
         successRedirectHandler.setDefaultTargetUrl("/landing");
+        successRedirectHandler.setAlwaysUseDefaultTargetUrl(false);
         return successRedirectHandler;
     }
 
@@ -301,7 +309,7 @@ public class OneLoginFilter {
     public SimpleUrlAuthenticationFailureHandler authenticationFailureHandler() {
         SimpleUrlAuthenticationFailureHandler failureHandler =
                 new SimpleUrlAuthenticationFailureHandler();
-        failureHandler.setUseForward(true);
+        //failureHandler.setUseForward(true);
         failureHandler.setDefaultFailureUrl("/error");
         return failureHandler;
     }
@@ -344,7 +352,7 @@ public class OneLoginFilter {
         SecurityContextLogoutHandler logoutHandler =
                 new SecurityContextLogoutHandler();
         logoutHandler.setInvalidateHttpSession(true);
-        logoutHandler.setClearAuthentication(true);
+        //logoutHandler.setClearAuthentication(true);
         return logoutHandler;
     }
 
@@ -422,8 +430,7 @@ public class OneLoginFilter {
      * @return Filter chain proxy
      * @throws Exception
      */
-    @Bean(name="samlFilter")
-    //@DependsOn(value = {"parserPoolHolder"})
+    @Bean()
     public FilterChainProxy samlFilter() throws Exception {
         List<SecurityFilterChain> chains = new ArrayList<SecurityFilterChain>();
         chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher("/saml/login/**"),
@@ -443,4 +450,15 @@ public class OneLoginFilter {
         return new FilterChainProxy(chains);
     }
 
+    @Bean(name="samlFilter")
+    public int addSAMLFilter() throws Exception {
+        filtersAfter.add(samlFilter());
+        return 1;
+    }
+
+    @Bean(name="metadataFilter")
+    public int addMetadataFilter(){
+        filtersBefore.add(metadataGeneratorFilter());
+        return 1;
+    }
 }

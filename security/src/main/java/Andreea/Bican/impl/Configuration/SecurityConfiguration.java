@@ -2,7 +2,8 @@ package Andreea.Bican.impl.Configuration;
 
 import Andreea.Bican.impl.Oauth2.FacebookAuthentication.FacebookFilter;
 import Andreea.Bican.impl.Oauth2.Filters.CSRFHeaderFilter;
-import Andreea.Bican.impl.Oauth2.Filters.ProvidersCompositeFilter;
+import Andreea.Bican.impl.Oauth2.Filters.FilterAfter;
+import Andreea.Bican.impl.Oauth2.Filters.FilterBefore;
 import Andreea.Bican.impl.Oauth2.GoogleAuthentication.GoogleFilter;
 import Andreea.Bican.impl.SAML.OneLoginAuthentication.OneLoginFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +18,12 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.saml.SAMLAuthenticationProvider;
 import org.springframework.security.saml.SAMLEntryPoint;
-import org.springframework.security.saml.metadata.MetadataGeneratorFilter;
-import org.springframework.security.web.FilterChainProxy;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.web.filter.CompositeFilter;
@@ -36,61 +34,25 @@ import java.util.ArrayList;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled=true)
 @Configuration
-@Import({ FacebookFilter.class, GoogleFilter.class, ProvidersCompositeFilter.class, CSRFHeaderFilter.class, OneLoginFilter.class})
+@Import({ FacebookFilter.class, GoogleFilter.class, FilterBefore.class, CSRFHeaderFilter.class, OneLoginFilter.class, FilterAfter.class})
 @EnableOAuth2Client
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-
-    @Autowired
-    @Qualifier("facebook")
-    OAuth2ClientAuthenticationProcessingFilter facebookFilter;
-
-    @Autowired
-    @Qualifier("google")
-    OAuth2ClientAuthenticationProcessingFilter googleFilter;
-
-   @Autowired
-    @Qualifier("csrfHeaderFilter")
-    Filter csrfHeaderFilter;
 
     @Autowired
     @Qualifier("samlEntryPoint")
     SAMLEntryPoint samlEntryPoint;
 
     @Autowired
-    @Qualifier("samlFilter")
-    FilterChainProxy samlFilter;
-
-    @Autowired
-    @Qualifier("metadataFilter")
-    MetadataGeneratorFilter metadataGeneratorFilter;
-
-    @Autowired
     @Qualifier("samlAuthenticationProvider")
     SAMLAuthenticationProvider authenticationProvider;
 
+    @Autowired
+    @Qualifier("filterBefore")
+    CompositeFilter filterBefore;
 
-    public CompositeFilter compositeFilter(){
-        CompositeFilter compositeFilter = new CompositeFilter();
-        ArrayList<Filter> list = new ArrayList<>();
-    //    FacebookFilter facebookFilter = new FacebookFilter();
-        list.add(facebookFilter);
-
-       // GoogleFilter googleFilter = new GoogleFilter();
-        list.add(googleFilter);
-        list.add(metadataGeneratorFilter);
-        CompositeFilter filter = new CompositeFilter();
-        filter.setFilters(list);
-        return filter;
-    }
-
-    public CompositeFilter afterCompositeFilter() throws Exception {
-        CompositeFilter compositeFilter = new CompositeFilter();
-        ArrayList<Filter> list = new ArrayList<>();
-        list.add(csrfHeaderFilter);
-        list.add(samlFilter);
-        compositeFilter.setFilters(list);
-        return compositeFilter;
-    }
+    @Autowired
+    @Qualifier("filterAfter")
+    CompositeFilter filterAfter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -105,13 +67,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .logoutSuccessUrl("/")
                     .permitAll()
                 .and()
-                .csrf().csrfTokenRepository(csrfTokenRepository())
-                .and()
-                .addFilterAfter(afterCompositeFilter(), CsrfFilter.class)
-                .addFilterBefore(compositeFilter(), BasicAuthenticationFilter.class);
-                    //.userDetailsService((UserDetailsService) detailsService);
-            //        .authenticationProvider(samlAuthenticationProvider())
+                .addFilterBefore(filterBefore, ChannelProcessingFilter.class)
+                .addFilterAfter(filterAfter, BasicAuthenticationFilter.class);
 
+                    
        http.csrf().disable();
     }
     @Bean
@@ -129,11 +88,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(authenticationProvider);
     }
 
-    @Bean(name="listOfFilters")
-    public ArrayList<Filter> createListOfFilters(){
+    @Bean(name="listOfFiltersBefore")
+    public ArrayList<Filter> createListOfFiltersBefore(){
         return new ArrayList<Filter>();
     }
 
+    @Bean(name="listOfFiltersAfter")
+    public ArrayList<Filter> createListOfFiltersAfter()  { return new ArrayList<Filter>();  }
     /*
     * Spring uses HttpSessionCsrfTokenRepository which by default
     * gives header name for CSRF as X-XSRF-TOKEN, but in order to use

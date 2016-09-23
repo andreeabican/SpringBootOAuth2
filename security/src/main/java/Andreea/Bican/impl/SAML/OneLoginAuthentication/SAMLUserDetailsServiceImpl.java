@@ -29,7 +29,7 @@ public class SAMLUserDetailsServiceImpl implements SAMLUserDetailsService {
         // data in the SAML assertion and return UserDetails object describing the user.
 
         String userID = credential.getNameID().getValue();
-        System.out.println("intra aici");
+
         LOG.info(userID + " is logged in\n\n\n\n\n\n\n\n\n\n\n");
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_USER");
